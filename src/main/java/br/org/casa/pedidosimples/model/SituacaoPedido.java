@@ -1,5 +1,7 @@
 package br.org.casa.pedidosimples.model;
 
+import br.org.casa.pedidosimples.util.EnumUtil;
+
 /**
  * Representa o estado de um {@link Pedido}. Determinadas operações para Pedidos
  * só podem executadas se ele estiver num certo estado.
@@ -35,5 +37,18 @@ public enum SituacaoPedido {
 	 */
 	public String getSigla() {
 		return sigla;
+	}
+
+	/**
+	 * Converte uma sigla informada no {@link SituacaoPedido} correspondente.
+	 *
+	 * @param sigla a sigla a ser convertido no elemento do enum correspondente
+	 * @return o SituacaoPedido correspondente à sigla informado
+	 * @throws NullPointerException se {@code sigla} for {@code null}
+	 * @throws IllegalArgumentException se não houver nenhum SituacaoPedido com
+	 * a sigla informada
+	 */
+	public static SituacaoPedido fromSigla(String sigla) {
+		return EnumUtil.enumFromValue(SituacaoPedido.class, sigla, SituacaoPedido::getSigla);
 	}
 }
