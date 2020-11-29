@@ -1,5 +1,6 @@
-package br.org.casa.pedidosimples.model;
+package br.org.casa.pedidosimples.model.enumeration;
 
+import br.org.casa.pedidosimples.model.Pedido;
 import br.org.casa.pedidosimples.util.EnumUtil;
 
 /**

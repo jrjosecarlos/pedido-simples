@@ -1,10 +1,12 @@
 /**
  *
  */
-package br.org.casa.pedidosimples.model;
+package br.org.casa.pedidosimples.model.enumeration;
 
 import java.math.BigDecimal;
 
+import br.org.casa.pedidosimples.model.ItemVenda;
+import br.org.casa.pedidosimples.model.Pedido;
 import br.org.casa.pedidosimples.util.EnumUtil;
 
 /**

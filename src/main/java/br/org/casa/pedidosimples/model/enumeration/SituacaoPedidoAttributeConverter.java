@@ -1,7 +1,7 @@
 /**
  *
  */
-package br.org.casa.pedidosimples.model;
+package br.org.casa.pedidosimples.model.enumeration;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;

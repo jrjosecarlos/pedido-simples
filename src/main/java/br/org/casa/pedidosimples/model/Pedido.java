@@ -12,6 +12,8 @@ import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import br.org.casa.pedidosimples.model.enumeration.SituacaoPedido;
+
 /**
  * Entidade que representa os pedidos a serem gerados no sistema.
  *

@@ -14,6 +14,8 @@ import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import br.org.casa.pedidosimples.model.enumeration.TipoItemVenda;
+
 /**
  * Representa um item que pode ser vendido, ou mais especificamente que pode ser incluso em
  * {@link Pedido}s.
