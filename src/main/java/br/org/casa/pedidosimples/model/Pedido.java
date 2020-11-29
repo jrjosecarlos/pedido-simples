@@ -19,7 +19,7 @@ import javax.validation.constraints.Size;
  *
  */
 @Entity
-@Table(name="pedido")
+@Table(schema = "pedido_simples", name = "pedido")
 @AttributeOverride(name = "id",
 	column = @Column(name="id_pedido")
 )
