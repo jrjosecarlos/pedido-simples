@@ -1,20 +1,16 @@
 package br.org.casa.pedidosimples.model;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
+import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
-import org.hibernate.annotations.GenericGenerator;
 
 /**
  * Entidade que representa os pedidos a serem gerados no sistema.
@@ -24,17 +20,10 @@ import org.hibernate.annotations.GenericGenerator;
  */
 @Entity
 @Table(name="pedido")
-public class Pedido {
-
-	@Id
-	@GeneratedValue(generator = "UUID")
-	@GenericGenerator(
-		name = "UUID",
-		strategy = "org.hibernate.id.UUIDGenerator"
-	)
-	@Column(name="id_pedido", updatable = false, nullable = false)
-	@NotNull
-	private UUID idPedido;
+@AttributeOverride(name = "id",
+	column = @Column(name="id_pedido")
+)
+public class Pedido extends BaseEntity {
 
 	@Column(name = "codigo", unique = true, nullable = false)
 	@NotNull
@@ -51,24 +40,6 @@ public class Pedido {
 	@Column(name = "situacao", nullable = false)
 	@NotNull
 	private SituacaoPedido situacao;
-
-	/**
-	 * Retorna o valor atual do campo idPedido.
-	 *
-	 * @return valor de idPedido
-	 */
-	public UUID getIdPedido() {
-		return idPedido;
-	}
-
-	/**
-	 * Define um novo valor para o campo idPedido
-	 *
-	 * @param idPedido o novo valor de idPedido
-	 */
-	public void setIdPedido(UUID idPedido) {
-		this.idPedido = idPedido;
-	}
 
 	/**
 	 * Retorna o valor atual do campo codigo.
