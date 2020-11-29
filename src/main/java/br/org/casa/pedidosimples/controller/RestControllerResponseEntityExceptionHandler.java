@@ -8,9 +8,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import br.org.casa.pedidosimples.exception.EntidadeNaoEncontradaException;
 import br.org.casa.pedidosimples.model.ErroHttpSimples;
 
 /**
@@ -27,6 +29,14 @@ public class RestControllerResponseEntityExceptionHandler extends ResponseEntity
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
 		ErroHttpSimples erro = new ErroHttpSimples(status, "Erro na leitura da requisição", ex.getMessage());
 		return super.handleExceptionInternal(ex, erro, headers, status, request);
+	}
+
+	@ExceptionHandler(value = {EntidadeNaoEncontradaException.class} )
+	protected ResponseEntity<Object> handleEntidadeNaoEncontrada(EntidadeNaoEncontradaException ex,
+			WebRequest request) {
+		ErroHttpSimples erro = new ErroHttpSimples(HttpStatus.NOT_FOUND, ex.getMessage());
+
+		return super.handleExceptionInternal(ex, erro, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
 	}
 
 }
