@@ -8,7 +8,7 @@ import javax.persistence.Converter;
 
 /**
  * Um {@link AttributeConverter} para persistir campos da classe {@link SituacaoPedido}
- * utilizando o valor da sigla correspondente.
+ * utilizando o valor correspondente ao elemento.
  *
  * @author jrjosecarlos
  *
@@ -18,12 +18,12 @@ public class SituacaoPedidoConverter implements AttributeConverter<SituacaoPedid
 
 	@Override
 	public String convertToDatabaseColumn(SituacaoPedido situacaoPedido) {
-		return situacaoPedido == null ? null : situacaoPedido.getSigla();
+		return situacaoPedido == null ? null : situacaoPedido.getValor();
 	}
 
 	@Override
 	public SituacaoPedido convertToEntityAttribute(String dbData) {
-		return dbData == null ? null : SituacaoPedido.fromSigla(dbData);
+		return dbData == null ? null : SituacaoPedido.fromValor(dbData);
 	}
 
 }

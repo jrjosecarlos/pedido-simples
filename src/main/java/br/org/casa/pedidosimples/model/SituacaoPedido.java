@@ -24,31 +24,31 @@ public enum SituacaoPedido {
 	 */
 	FECHADO("F");
 
-	private String sigla;
+	private String valor;
 
-	private SituacaoPedido(String sigla) {
-		this.sigla = sigla;
+	private SituacaoPedido(String valor) {
+		this.valor = valor;
 	}
 
 	/**
-	 * Retorna o valor atual do campo sigla.
+	 * Retorna o valor atual do campo valor.
 	 *
-	 * @return valor de sigla
+	 * @return valor de valor
 	 */
-	public String getSigla() {
-		return sigla;
+	public String getValor() {
+		return valor;
 	}
 
 	/**
-	 * Converte uma sigla informada no {@link SituacaoPedido} correspondente.
+	 * Converte um valor informado no {@link SituacaoPedido} correspondente.
 	 *
-	 * @param sigla a sigla a ser convertido no elemento do enum correspondente
-	 * @return o SituacaoPedido correspondente à sigla informado
-	 * @throws NullPointerException se {@code sigla} for {@code null}
+	 * @param valor o valor a ser convertido no elemento do enum correspondente
+	 * @return o SituacaoPedido correspondente ao valor informado
+	 * @throws NullPointerException se {@code valor} for {@code null}
 	 * @throws IllegalArgumentException se não houver nenhum SituacaoPedido com
-	 * a sigla informada
+	 * o valor informado
 	 */
-	public static SituacaoPedido fromSigla(String sigla) {
-		return EnumUtil.enumFromValue(SituacaoPedido.class, sigla, SituacaoPedido::getSigla);
+	public static SituacaoPedido fromValor(String valor) {
+		return EnumUtil.enumFromValue(SituacaoPedido.class, valor, SituacaoPedido::getValor);
 	}
 }
