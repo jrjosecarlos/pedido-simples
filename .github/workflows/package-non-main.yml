@@ -6,7 +6,7 @@ name: Java CI with Maven - non-main
 on:
   push:
     branches:
-      - '!main'
+    - '!main'
 
 jobs:
   build:
