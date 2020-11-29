@@ -14,7 +14,7 @@ import javax.persistence.Converter;
  *
  */
 @Converter(autoApply = true)
-public class SituacaoPedidoConverter implements AttributeConverter<SituacaoPedido, String>{
+public class SituacaoPedidoAttributeConverter implements AttributeConverter<SituacaoPedido, String>{
 
 	@Override
 	public String convertToDatabaseColumn(SituacaoPedido situacaoPedido) {
