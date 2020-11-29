@@ -52,8 +52,8 @@ public class ItemVendaController {
 		return repository.save(itemVenda);
 	}
 
-	@DeleteMapping("/item-venda/{id}")
-	void excluirItemVenda(@PathVariable("id") UUID id) {
-		repository.deleteById(id);
+	@DeleteMapping("/item-venda/{uuid}")
+	void excluirItemVenda(@PathVariable("uuid") UUID uuid) {
+		repository.deleteById(uuid);
 	}
 }
