@@ -23,17 +23,15 @@ public final class EnumUtil {
 	 *
 	 * @param <E> Classe do Enum que será retornado
 	 * @param <V> Classe de valor associado aos elementos do Enum
-	 * @param <X> Classe do {@link Throwable} a ser lançado caso nenhum elemento do Enum tenha valor associado
-	 * igual a {@code value}.
 	 * @param enumClass referência à classe do Enum que está envolvido na conversão.
 	 * @param value o valor a ser buscado nos elementos do Enum.
 	 * @param converter a {@link Function} de conversão dos elementos do Enum aos valores associados a eles.
 	 * @return o elemento do Enum cujo valor associado é {@code value}.
-	 * @throws X caso não haja nenhum elemento do Enum com valor associado igual a {@code value}.
+	 * @throws IllegalArgumentException caso não haja nenhum elemento do Enum com valor associado igual a {@code value}.
 	 * @throws NullPointerException se qualquer um dos parâmetros for {@code null}.
 	 */
-	public static <E extends Enum<E>, V, X extends Throwable> E enumFromValue(Class<E> enumClass, V value, Function<E, V> converter)
-			throws X, NullPointerException {
+	public static <E extends Enum<E>, V> E enumFromValue(Class<E> enumClass, V value, Function<E, V> converter)
+			throws NullPointerException, IllegalArgumentException {
 		Objects.requireNonNull(enumClass, "A referência à classe de enum não pode ser null");
 		Objects.requireNonNull(value, "O valor a ser convertido não pode ser null");
 		Objects.requireNonNull(converter, "A função de conversão não pode ser null");
