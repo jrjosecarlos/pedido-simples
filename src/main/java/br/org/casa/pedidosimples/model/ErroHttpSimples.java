@@ -33,7 +33,17 @@ public class ErroHttpSimples {
 	private LocalDateTime timestamp = LocalDateTime.now();
 
 	/**
-	 * Constrói um novo ErroHttpSimples definindo valores para status, mensagem e descricaoDetalhada.
+	 * Constrói um novo erro simples definindo valores apenas para status e mensagem,
+	 * sem definir uma descrição detalhada.
+	 *
+	 * @param status valor inicial de status
+	 * @param mensagem valor inicial de mensagem
+	 */
+	public ErroHttpSimples(HttpStatus status, String mensagem) {
+		this(status, mensagem, "Nenhuma descrição detalhada informada");
+	}
+	/**
+	 * Constrói um novo ErroHttpSimples definindo valores para status, mensagem e descricão detalhada.
 	 *
 	 * @param status valor inicial de status
 	 * @param mensagem valor inicial de mensagem
