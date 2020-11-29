@@ -28,7 +28,7 @@ import javax.validation.constraints.Size;
 )
 public class ItemVenda extends BaseEntity {
 
-	@Column(name = "nome")
+	@Column(name = "nome", nullable = false)
 	@NotNull
 	@Size(min = 1, max = 100)
 	private String nome;
