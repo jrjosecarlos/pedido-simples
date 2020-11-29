@@ -5,6 +5,8 @@ package br.org.casa.pedidosimples.model.enumeration;
 
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 import br.org.casa.pedidosimples.model.ItemVenda;
 import br.org.casa.pedidosimples.model.Pedido;
 import br.org.casa.pedidosimples.util.EnumUtil;
@@ -44,6 +46,7 @@ public enum TipoItemVenda {
 	 *
 	 * @return valor de valor
 	 */
+	@JsonValue
 	public String getValor() {
 		return valor;
 	}
