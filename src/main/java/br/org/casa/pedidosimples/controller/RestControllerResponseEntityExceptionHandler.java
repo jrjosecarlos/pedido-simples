@@ -13,6 +13,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import br.org.casa.pedidosimples.exception.EntidadeNaoEncontradaException;
+import br.org.casa.pedidosimples.exception.ParametroBuscaParseException;
 import br.org.casa.pedidosimples.model.ErroHttpSimples;
 
 /**
@@ -37,6 +38,15 @@ public class RestControllerResponseEntityExceptionHandler extends ResponseEntity
 		ErroHttpSimples erro = new ErroHttpSimples(HttpStatus.NOT_FOUND, ex.getMessage());
 
 		return super.handleExceptionInternal(ex, erro, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+	}
+
+	@ExceptionHandler(value = {ParametroBuscaParseException.class})
+	protected ResponseEntity<Object> handleParametroBuscaParse(ParametroBuscaParseException ex,
+			WebRequest request) {
+		HttpStatus status = HttpStatus.BAD_REQUEST;
+		ErroHttpSimples erro = new ErroHttpSimples(status, ex.getMessage(), ex.getDetailedMessage());
+
+		return super.handleExceptionInternal(ex, erro, new HttpHeaders(), status, request);
 	}
 
 }
