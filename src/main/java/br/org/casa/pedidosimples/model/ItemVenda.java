@@ -14,6 +14,10 @@ import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.BooleanPath;
+import com.querydsl.core.types.dsl.Expressions;
+
 import br.org.casa.pedidosimples.model.enumeration.TipoItemVenda;
 import br.org.casa.pedidosimples.util.EnumUtil;
 
@@ -122,22 +126,82 @@ public class ItemVenda extends BaseEntity {
 		this.ativo = ativo;
 	}
 
+	/**
+	 * Enumeração que contém os possíveis parâmetros de busca para {@link ItemVenda}.
+	 *
+	 * @author jrjosecarlos
+	 *
+	 */
 	public enum ParametroBuscaItemVenda {
-		NOME("nome"),
+		/**
+		 * Busca por qualquer pedaço do nome, case insensitivo. O valor informado é do tipo {@link String}.
+		 */
+		NOME("nome") {
+			@Override
+			public BooleanExpression getPredicate(String valor) {
+				return QItemVenda.itemVenda.nome.containsIgnoreCase(valor);
+			}
+		},
 
-		VALOR_MINIMO("valorMinimo"),
+		/**
+		 * Busca por ItensVenda com valor maior ou igual ao informado. O valor esperado é do tipo
+		 * {@link BigDecimal}.
+		 */
+		VALOR_MINIMO("valorMinimo") {
+			@Override
+			public BooleanExpression getPredicate(String valor) {
+				return QItemVenda.itemVenda.valorBase.goe(new BigDecimal(valor));
+			}
+		},
 
-		VALOR_MAXIMO("valorMaximo"),
+		/**
+		 * Busca por ItensVenda com valor menor ou igual ao informado. O valor informado é do tipo
+		 * {@link BigDecimal}.
+		 */
+		VALOR_MAXIMO("valorMaximo") {
+			@Override
+			public BooleanExpression getPredicate(String valor) {
+				return QItemVenda.itemVenda.valorBase.loe(new BigDecimal(valor));
+			}
+		},
 
-		TIPO("tipo"),
+		/**
+		 * Busca por ItensVenda do tipo informado. O valor informado corresponde aos valores de
+		 * {@link TipoItemVenda}.
+		 */
+		TIPO("tipo") {
+			@Override
+			public BooleanExpression getPredicate(String valor) {
+				return QItemVenda.itemVenda.tipo.eq(TipoItemVenda.fromValor(valor));
+			}
+		},
 
-		ATIVO("ativo");
+		/**
+		 * Busca por ItensVenda ativos ou inativos. O valor informado corresponde às letras S ou N
+		 * (case insensitivo) para ativo ou inativo, respectivamente.
+		 */
+		ATIVO("ativo") {
+			@Override
+			public BooleanExpression getPredicate(String valor) {
+				BooleanPath ativo = QItemVenda.itemVenda.ativo;
+
+				if("s".equalsIgnoreCase(valor)) {
+					return ativo.eq(Expressions.asBoolean(true));
+				} else if("n".equalsIgnoreCase(valor)) {
+					return ativo.eq(Expressions.asBoolean(false));
+				} else {
+					throw new IllegalArgumentException();
+				}
+			}
+		};
 
 		private String nomeParametro;
 
 		private ParametroBuscaItemVenda(String nomeParametro) {
 			this.nomeParametro = nomeParametro;
 		}
+
+		public abstract BooleanExpression getPredicate(String valor);
 
 		/**
 		 * Retorna o valor atual do campo nomeParametro.
