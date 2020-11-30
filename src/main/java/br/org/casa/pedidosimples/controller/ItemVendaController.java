@@ -3,10 +3,11 @@
  */
 package br.org.casa.pedidosimples.controller;
 
-import java.util.List;
 import java.util.UUID;
 import java.util.function.Supplier;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,8 +43,8 @@ public class ItemVendaController {
 	}
 
 	@GetMapping("/itens-venda")
-	ResponseEntity<List<ItemVenda>> listarTodosItensVenda() {
-		return ResponseEntity.ok(repository.findAll());
+	ResponseEntity<Page<ItemVenda>> listarTodosItensVenda(Pageable pageable) {
+		return ResponseEntity.ok(repository.findAll(pageable));
 	}
 
 	@GetMapping("/item-venda/{uuid}")
