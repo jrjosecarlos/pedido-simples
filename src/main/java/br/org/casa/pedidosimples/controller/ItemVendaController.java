@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Supplier;
 
+import javax.validation.Valid;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -56,7 +58,7 @@ public class ItemVendaController {
 	}
 
 	@PostMapping("/item-venda")
-	ResponseEntity<ItemVenda> incluirItemVenda(@RequestBody ItemVenda itemVenda) {
+	ResponseEntity<ItemVenda> incluirItemVenda(@RequestBody @Valid ItemVenda itemVenda) {
 		ItemVenda criado = repository.save(itemVenda);
 
 		return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequest()

@@ -9,7 +9,6 @@ import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
-import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -29,7 +28,6 @@ public abstract class BaseEntity {
 		strategy = "org.hibernate.id.UUIDGenerator"
 	)
 	@Column(updatable = false, nullable = false)
-	@NotNull
 	private UUID id;
 
 	/**

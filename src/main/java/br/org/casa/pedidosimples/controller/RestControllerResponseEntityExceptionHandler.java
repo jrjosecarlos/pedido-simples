@@ -7,6 +7,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -47,6 +49,20 @@ public class RestControllerResponseEntityExceptionHandler extends ResponseEntity
 		ErroHttpSimples erro = new ErroHttpSimples(status, ex.getMessage(), ex.getDetailedMessage());
 
 		return super.handleExceptionInternal(ex, erro, new HttpHeaders(), status, request);
+	}
+
+	@Override
+	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+			HttpHeaders headers, HttpStatus status, WebRequest request) {
+		HttpStatus statusEfetivo = HttpStatus.UNPROCESSABLE_ENTITY;
+
+		FieldError fieldError = ex.getFieldError();
+
+		ErroHttpSimples erro = new ErroHttpSimples(statusEfetivo, "Erro de validação",
+				String.format("Campo [ %s ] (valor recebido [ %s ]). Mensagem de erro: %s",
+						fieldError.getField(), fieldError.getRejectedValue(), fieldError.getDefaultMessage()));
+
+		return super.handleExceptionInternal(ex, erro, new HttpHeaders(), statusEfetivo, request);
 	}
 
 }
