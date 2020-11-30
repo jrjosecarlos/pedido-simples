@@ -4,6 +4,8 @@
 package br.org.casa.pedidosimples.model;
 
 import java.math.BigDecimal;
+import java.util.EnumSet;
+import java.util.stream.Collectors;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
@@ -18,6 +20,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.BooleanPath;
 import com.querydsl.core.types.dsl.Expressions;
 
+import br.org.casa.pedidosimples.exception.ParametroBuscaParseException;
 import br.org.casa.pedidosimples.model.enumeration.TipoItemVenda;
 import br.org.casa.pedidosimples.util.EnumUtil;
 
@@ -34,6 +37,12 @@ import br.org.casa.pedidosimples.util.EnumUtil;
 	column = @Column(name = "id_item_venda")
 )
 public class ItemVenda extends BaseEntity {
+
+	/**
+	 * Nome da entidade principal associada a este Controller. Usado principalmente no
+	 * retorno de mensagens de erro
+	 */
+	public static final String NOME_EXIBICAO_ENTIDADE = "Item de Venda";
 
 	@Column(name = "nome", nullable = false)
 	@NotNull
@@ -150,7 +159,11 @@ public class ItemVenda extends BaseEntity {
 		VALOR_MINIMO("valorMinimo") {
 			@Override
 			public BooleanExpression getPredicate(String valor) {
-				return QItemVenda.itemVenda.valorBase.goe(new BigDecimal(valor));
+				try {
+					return QItemVenda.itemVenda.valorBase.goe(new BigDecimal(valor));
+				} catch (NumberFormatException e) {
+					throw new ParametroBuscaParseException(e, NOME_EXIBICAO_ENTIDADE, this.getNomeParametro(), valor, "0.00");
+				}
 			}
 		},
 
@@ -161,7 +174,11 @@ public class ItemVenda extends BaseEntity {
 		VALOR_MAXIMO("valorMaximo") {
 			@Override
 			public BooleanExpression getPredicate(String valor) {
-				return QItemVenda.itemVenda.valorBase.loe(new BigDecimal(valor));
+				try {
+					return QItemVenda.itemVenda.valorBase.loe(new BigDecimal(valor));
+				} catch (NumberFormatException e) {
+					throw new ParametroBuscaParseException(e, NOME_EXIBICAO_ENTIDADE, this.getNomeParametro(), valor, "0.00");
+				}
 			}
 		},
 
@@ -172,7 +189,16 @@ public class ItemVenda extends BaseEntity {
 		TIPO("tipo") {
 			@Override
 			public BooleanExpression getPredicate(String valor) {
-				return QItemVenda.itemVenda.tipo.eq(TipoItemVenda.fromValor(valor));
+				try {
+					return QItemVenda.itemVenda.tipo.eq(TipoItemVenda.fromValor(valor));
+				} catch (IllegalArgumentException e) {
+					throw new ParametroBuscaParseException(e, NOME_EXIBICAO_ENTIDADE, this.getNomeParametro(), valor,
+							EnumSet.allOf(TipoItemVenda.class)
+								.stream()
+								.map(TipoItemVenda::getValor)
+								.collect(Collectors.joining(" | "))
+							);
+				}
 			}
 		},
 
@@ -190,7 +216,8 @@ public class ItemVenda extends BaseEntity {
 				} else if("n".equalsIgnoreCase(valor)) {
 					return ativo.eq(Expressions.asBoolean(false));
 				} else {
-					throw new IllegalArgumentException();
+					throw new ParametroBuscaParseException(null, NOME_EXIBICAO_ENTIDADE, this.getNomeParametro(), valor,
+							"S | N");
 				}
 			}
 		};
