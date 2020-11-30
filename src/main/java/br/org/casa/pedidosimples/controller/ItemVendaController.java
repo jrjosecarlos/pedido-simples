@@ -34,11 +34,6 @@ import br.org.casa.pedidosimples.service.ItemVendaService;
 @RestController
 public class ItemVendaController {
 
-	/**
-	 * Nome da entidade principal associada a este Controller. Usado no retorno de mensagens de erro
-	 */
-	private static final String NOME_EXIBICAO_ENTIDADE = "Item de Venda";
-
 	private final ItemVendaRepository repository;
 
 	private final ItemVendaService service;
@@ -100,6 +95,6 @@ public class ItemVendaController {
 	 * @see EntidadeNaoEncontradaException#EntidadeNaoEncontradaException(String, UUID)
 	 */
 	private Supplier<EntidadeNaoEncontradaException> gerarEntidadeNaoEncontradaException(UUID uuid) {
-		return () -> new EntidadeNaoEncontradaException(NOME_EXIBICAO_ENTIDADE, uuid);
+		return () -> new EntidadeNaoEncontradaException(ItemVenda.NOME_EXIBICAO_ENTIDADE, uuid);
 	}
 }
