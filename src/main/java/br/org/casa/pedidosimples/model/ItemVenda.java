@@ -247,7 +247,7 @@ public class ItemVenda extends BaseEntity {
 		 * @return {@code true}, se corresponder a algum elemento do enum, {@code false}
 		 * caso contrário
 		 */
-		public static boolean isParametroBuscaVenda(String nomeParametro) {
+		public static boolean isParametroBuscaItemVenda(String nomeParametro) {
 			return EnumUtil.isEnumFromValue(ParametroBuscaItemVenda.class, nomeParametro, ParametroBuscaItemVenda::getNomeParametro);
 		}
 

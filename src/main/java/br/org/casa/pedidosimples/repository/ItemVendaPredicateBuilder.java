@@ -35,7 +35,7 @@ public class ItemVendaPredicateBuilder {
 	public static ItemVendaPredicateBuilder of(Map<String, String> mapaParametros) {
 		return new ItemVendaPredicateBuilder(mapaParametros.entrySet().stream()
 				.filter(entry -> !entry.getValue().isEmpty())
-				.filter(entry -> ParametroBuscaItemVenda.isParametroBuscaVenda(entry.getKey()))
+				.filter(entry -> ParametroBuscaItemVenda.isParametroBuscaItemVenda(entry.getKey()))
 				.collect(Collectors.toMap(
 						entry -> ParametroBuscaItemVenda.fromValor(entry.getKey()),
 						Entry::getValue)
