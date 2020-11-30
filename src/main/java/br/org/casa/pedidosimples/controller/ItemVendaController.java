@@ -3,6 +3,7 @@
  */
 package br.org.casa.pedidosimples.controller;
 
+import java.util.Map;
 import java.util.UUID;
 import java.util.function.Supplier;
 
@@ -15,12 +16,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.org.casa.pedidosimples.exception.EntidadeNaoEncontradaException;
 import br.org.casa.pedidosimples.model.ItemVenda;
 import br.org.casa.pedidosimples.repository.ItemVendaRepository;
+import br.org.casa.pedidosimples.service.ItemVendaService;
 
 /**
  * Controller para exposição dos serviços REST relacionados a {@link ItemVenda}.
@@ -38,13 +41,16 @@ public class ItemVendaController {
 
 	private final ItemVendaRepository repository;
 
-	ItemVendaController(ItemVendaRepository repository) {
+	private final ItemVendaService service;
+
+	ItemVendaController(ItemVendaRepository repository, ItemVendaService service) {
 		this.repository = repository;
+		this.service = service;
 	}
 
 	@GetMapping("/itens-venda")
-	ResponseEntity<Page<ItemVenda>> listarTodosItensVenda(Pageable pageable) {
-		return ResponseEntity.ok(repository.findAll(pageable));
+	ResponseEntity<Page<ItemVenda>> listarTodosItensVenda(Pageable pageable, @RequestParam Map<String, String> params) {
+		return ResponseEntity.ok(service.buscarTodosItensVenda(pageable, params));
 	}
 
 	@GetMapping("/item-venda/{uuid}")
