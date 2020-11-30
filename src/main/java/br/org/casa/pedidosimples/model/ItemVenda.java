@@ -39,8 +39,8 @@ import br.org.casa.pedidosimples.util.EnumUtil;
 public class ItemVenda extends BaseEntity {
 
 	/**
-	 * Nome da entidade principal associada a este Controller. Usado principalmente no
-	 * retorno de mensagens de erro
+	 * Nome de exibição para esta entidade. Usado principalmente no retorno
+	 * de mensagens de erro
 	 */
 	public static final String NOME_EXIBICAO_ENTIDADE = "Item de Venda";
 
