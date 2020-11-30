@@ -248,12 +248,7 @@ public class ItemVenda extends BaseEntity {
 		 * caso contrário
 		 */
 		public static boolean isParametroBuscaVenda(String nomeParametro) {
-			try {
-				ParametroBuscaItemVenda.fromValor(nomeParametro);
-				return true;
-			} catch (IllegalArgumentException e) {
-				return false;
-			}
+			return EnumUtil.isEnumFromValue(ParametroBuscaItemVenda.class, nomeParametro, ParametroBuscaItemVenda::getNomeParametro);
 		}
 
 		/**
