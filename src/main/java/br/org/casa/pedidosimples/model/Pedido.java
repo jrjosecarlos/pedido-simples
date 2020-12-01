@@ -110,6 +110,9 @@ public class Pedido extends BaseEntity {
 	}
 
 	public enum ParametroBuscaPedido {
+		/**
+		 * Busca por qualquer pedaço do código do {@link Pedido}.
+		 */
 		CODIGO("codigo") {
 			@Override
 			public BooleanExpression getPredicate(String valor) {
@@ -117,6 +120,10 @@ public class Pedido extends BaseEntity {
 			}
 		},
 
+		/**
+		 * Busca {@link Pedido}s com uma {@link SituacaoPedido situação} específica, através
+		 * de seus códigos.
+		 */
 		SITUACAO("situacao") {
 			@Override
 			public BooleanExpression getPredicate(String valor) {
