@@ -48,7 +48,7 @@ public class Pedido extends BaseEntity {
 	@NotNull
 	@DecimalMin(value = "0.00", inclusive = true)
 	@DecimalMax(value = "1.00", inclusive = true)
-	@Digits(integer = 0, fraction = 2)
+	@Digits(integer = 1, fraction = 2)
 	private BigDecimal fatorDesconto;
 
 	@Column(name = "situacao", nullable = false)
