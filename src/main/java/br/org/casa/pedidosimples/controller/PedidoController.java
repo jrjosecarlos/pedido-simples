@@ -46,7 +46,7 @@ public class PedidoController {
 		return ResponseEntity.ok(service.buscarTodos(pageable, params));
 	}
 
-	@GetMapping("/pedidos/{uuid}")
+	@GetMapping("/pedido/{uuid}")
 	ResponseEntity<Pedido> buscarPedidoPorId(@PathVariable("uuid") UUID uuid) {
 		return ResponseEntity.ok(service.buscarPorId(uuid)
 					.orElseThrow(() -> new EntidadeNaoEncontradaException(Pedido.NOME_EXIBICAO_ENTIDADE, uuid))
