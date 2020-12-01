@@ -65,7 +65,7 @@ public class ItemVendaController {
 	}
 
 	@PutMapping("/item-venda/{uuid}")
-	ResponseEntity<ItemVenda> atualizarItemVenda(@RequestBody ItemVenda itemVenda, @PathVariable("uuid") UUID uuid) {
+	ResponseEntity<ItemVenda> atualizarItemVenda(@RequestBody @Valid ItemVenda itemVenda, @PathVariable("uuid") UUID uuid) {
 		ItemVenda atualizado = service.alterar(uuid, itemVenda);
 
 		return ResponseEntity.ok(atualizado);
