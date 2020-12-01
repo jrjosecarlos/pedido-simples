@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.querydsl.core.types.dsl.BooleanExpression;
 
 import br.org.casa.pedidosimples.exception.ParametroBuscaParseException;
@@ -48,6 +49,7 @@ public class ItemPedido extends BaseEntity {
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "pedido_id", nullable = false)
 	@NotNull
+	@JsonIgnore
 	private Pedido pedido;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
