@@ -54,15 +54,13 @@ public class RestControllerResponseEntityExceptionHandler extends ResponseEntity
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
-		HttpStatus statusEfetivo = HttpStatus.UNPROCESSABLE_ENTITY;
-
 		FieldError fieldError = ex.getFieldError();
 
-		ErroHttpSimples erro = new ErroHttpSimples(statusEfetivo, "Erro de validação",
+		ErroHttpSimples erro = new ErroHttpSimples(status, "Erro de validação",
 				String.format("Campo [ %s ] (valor recebido [ %s ]). Mensagem de erro: %s",
 						fieldError.getField(), fieldError.getRejectedValue(), fieldError.getDefaultMessage()));
 
-		return super.handleExceptionInternal(ex, erro, new HttpHeaders(), statusEfetivo, request);
+		return super.handleExceptionInternal(ex, erro, new HttpHeaders(), status, request);
 	}
 
 }
