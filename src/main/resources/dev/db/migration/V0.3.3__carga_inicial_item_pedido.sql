@@ -1,0 +1,9 @@
+insert into pedido_simples.item_pedido (id_item_pedido, pedido_id, item_venda_id, valor) values
+('9bed2181-1ec0-486b-b837-ee9385060b39', 'dbbd2adc-3bda-45d7-bf47-172dac89ec3c', 'd1293916-d146-4805-8756-ec1527d2c3a2', 10.00),
+('480fbadd-d053-4dab-8a90-81ac32406092', 'dbbd2adc-3bda-45d7-bf47-172dac89ec3c', '0f371515-71ca-4f39-acb5-2f9ce923edc7', 25.44),
+('c499333c-d308-4fc3-aa5c-53bd0be42da7', 'bb046b97-7393-483e-a87a-65328e2b0b77', 'a97245b4-566d-4cfd-9d89-7492dc5c6a48', 27.50),
+('2acc06a2-33de-49e3-95a6-74b9b1ec1ac8', 'bb046b97-7393-483e-a87a-65328e2b0b77', '7e4f480f-d06a-42c7-a9ea-4de63a22c5c5', 2300.00),
+('2f1fc1d9-c2ce-404b-9771-243aae4a83a4', 'bb046b97-7393-483e-a87a-65328e2b0b77', 'f19c4431-4192-4daa-a2f5-8c6d8b29798c', 17.99),
+('7a1eb3ab-a8d7-405c-a347-eaee4bea60cd', '5bf303ed-8104-44d5-a28d-191c679465cd', 'd1293916-d146-4805-8756-ec1527d2c3a2', 0.00),
+('376f8080-af92-48e8-ac5e-63df00ceac73', '5bf303ed-8104-44d5-a28d-191c679465cd', 'a97245b4-566d-4cfd-9d89-7492dc5c6a48', 0.00),
+('f3970b7f-8fb4-454d-b2e9-c9bbe8c695bc', '5bf303ed-8104-44d5-a28d-191c679465cd', '0f371515-71ca-4f39-acb5-2f9ce923edc7', 25.44)
