@@ -16,6 +16,7 @@ import br.org.casa.pedidosimples.model.ItemPedido;
  * @author jrjosecarlos
  *
  */
-public interface ItemPedidoRepository extends JpaRepository<ItemPedido, UUID>, QuerydslPredicateExecutor<ItemPedido> {
+public interface ItemPedidoRepository extends JpaRepository<ItemPedido, UUID>, QuerydslPredicateExecutor<ItemPedido>,
+	CustomItemPedidoRepository {
 
 }
