@@ -41,7 +41,7 @@ public interface PedidoService {
 	 * @return um Optional contendo o Pedido com o id informado, se existir, ou um Optional
 	 * vazio, caso não exista.
 	 */
-	Optional<Pedido> buscarPorId();
+	Optional<Pedido> buscarPorId(UUID uuid);
 
 	/**
 	 * Inclui um novo Pedido.
