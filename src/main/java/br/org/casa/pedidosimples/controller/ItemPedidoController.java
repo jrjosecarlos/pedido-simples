@@ -18,7 +18,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import br.org.casa.pedidosimples.exception.EntidadeNaoEncontradaException;
 import br.org.casa.pedidosimples.model.ItemPedido;
@@ -54,15 +55,14 @@ public class ItemPedidoController {
 
 	@PostMapping("/pedido/{uuidPedido}/item-pedido")
 	ResponseEntity<ItemPedido> incluirItemPedido(@PathVariable("uuidPedido") UUID uuidPedido,
-			@RequestBody @Valid ItemVenda itemVenda) {
+			@RequestBody @Valid ItemVenda itemVenda, UriComponentsBuilder builder) {
 		ItemPedido criado = service.incluir(uuidPedido, itemVenda);
 
-		return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequest()
-					.path("/item-pedido/{uuid}")
+		return ResponseEntity.created(MvcUriComponentsBuilder
+					.fromMethodName(builder, this.getClass(), "buscarItemPedidoPorId", criado.getId())
 					.buildAndExpand(criado.getId())
 					.toUri()
-				)
-				.body(criado);
+				).body(criado);
 	}
 
 	@DeleteMapping("/item-pedido/{uuid}")
