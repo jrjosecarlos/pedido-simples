@@ -11,7 +11,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import br.org.casa.pedidosimples.exception.EntidadeNaoEncontradaException;
+import br.org.casa.pedidosimples.exception.OperacaoInvalidaException;
+import br.org.casa.pedidosimples.model.ItemPedido;
 import br.org.casa.pedidosimples.model.ItemVenda;
+import br.org.casa.pedidosimples.model.Pedido;
 
 /**
  * Contrato para os serviços relacionados a {@link ItemVenda}.
@@ -48,12 +51,15 @@ public interface ItemVendaService {
 	ItemVenda incluir(ItemVenda itemVenda);
 
 	/**
-	 * Altera um ItemVenda existente.
+	 * Altera um ItemVenda existente. Se o valor do itemVenda for alterado, os {@link ItemPedido}
+	 * associados serão recalculados.
 	 *
 	 * @param uuid o id do ItemVenda a ser alterado
 	 * @param itemVenda os novos dados para o itemVenda
 	 * @return a versão persistida deste itemVenda
 	 * @throws EntidadeNaoEncontradaException se não existir ItemVenda com o uuid informado
+	 * @throws OperacaoInvalidaException se houver uma tentativa de desativar o itemVenda e houver
+	 * {@link Pedido}s em aberto com {@link ItemPedido}s associados a este itemVenda
 	 */
 	ItemVenda alterar(UUID uuid, ItemVenda itemVenda);
 
@@ -62,6 +68,7 @@ public interface ItemVendaService {
 	 *
 	 * @param uuid id do ItemVenda a ser excluído
 	 * @throws EntidadeNaoEncontradaException se não existir ItemVenda com o uuid informado
+	 * @throws OperacaoInvalidaException se existir algum ItemPedido já associado ao itemVenda
 	 */
 	void excluir(UUID uuid);
 }
