@@ -132,7 +132,7 @@ public class ItemPedido extends BaseEntity {
 	 */
 	public BigDecimal calcularValor() {
 		BigDecimal fatorDescontoEfetivo = this.getPedido().getFatorDesconto()
-				.multiply(this.getItemVenda().getTipo().getFatorDesconto());
+				.multiply(this.getItemVenda().getTipo().getFatorAplicacaoDesconto());
 		BigDecimal valorAtualizado = this.getItemVenda().getValorBase()
 				.subtract(this.getItemVenda().getValorBase().multiply(fatorDescontoEfetivo));
 
