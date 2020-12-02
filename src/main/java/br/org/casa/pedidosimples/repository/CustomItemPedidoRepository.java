@@ -3,6 +3,9 @@
  */
 package br.org.casa.pedidosimples.repository;
 
+import java.util.Optional;
+import java.util.UUID;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -21,4 +24,6 @@ import br.org.casa.pedidosimples.model.Pedido;
 public interface CustomItemPedidoRepository {
 
 	Page<ItemPedido> findByPedido(Pedido pedido, BooleanExpression predicate, Pageable pageable);
+
+	Optional<ItemPedido> findById(UUID id);
 }

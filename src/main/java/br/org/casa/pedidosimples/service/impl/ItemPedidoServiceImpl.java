@@ -53,8 +53,7 @@ public class ItemPedidoServiceImpl implements ItemPedidoService {
 
 	@Override
 	public Optional<ItemPedido> buscarPorId(UUID uuid) {
-		// TODO Auto-generated method stub
-		return null;
+		return itemPedidoRepository.findById(uuid);
 	}
 
 	@Override

@@ -3,6 +3,9 @@
  */
 package br.org.casa.pedidosimples.repository;
 
+import java.util.Optional;
+import java.util.UUID;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -42,6 +45,15 @@ public class CustomItemPedidoRepositoryImpl extends QuerydslRepositorySupport
 
 
 		return new PageImpl<ItemPedido>(query.fetch(), pageable, query.fetchCount());
+	}
+
+	@Override
+	public Optional<ItemPedido> findById(UUID id) {
+		return Optional.of(from(itemPedido)
+			.where(itemPedido.id.eq(id))
+			.innerJoin(itemPedido.pedido).fetchJoin()
+			.innerJoin(itemPedido.itemVenda).fetchJoin()
+			.fetchOne() );
 	}
 
 }
