@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import br.org.casa.pedidosimples.exception.EntidadeNaoEncontradaException;
+import br.org.casa.pedidosimples.exception.OperacaoInvalidaException;
 import br.org.casa.pedidosimples.model.ItemPedido;
 import br.org.casa.pedidosimples.model.ItemVenda;
 import br.org.casa.pedidosimples.model.Pedido;
@@ -40,8 +41,19 @@ public interface ItemPedidoService {
 	 *
 	 * @param pedido o Pedido que terá os valores dos itens atualizados
 	 * @throws EntidadeNaoEncontradaException se não existir o Pedido informado.
+	 * @throws OperacaoInvalidaException se o Pedido estiver com situação
+	 * {@link SituacaoPedido#FECHADO}
 	 */
 	void atualizarValores(Pedido pedido);
+
+	/**
+	 * Atualiza os valores de todos os {@link ItemPedido} associados ao {@link ItemVenda}
+	 * informados e que sejam de Pedidos em aberto.
+	 *
+	 * @param itemVenda o itemVenda que se deseja buscar
+	 * @throws EntidadeNaoEncontradaException se o itemVenda informado não existir.
+	 */
+	void atualizarValores(ItemVenda itemVenda);
 
 	/**
 	 * Busca um {@link ItemPedido} pelo seu uuid.

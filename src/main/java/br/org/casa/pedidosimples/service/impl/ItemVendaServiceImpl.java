@@ -84,13 +84,20 @@ public class ItemVendaServiceImpl implements ItemVendaService {
 			}
 		}
 
+		// Necessário armazenar a necessidade ou não de atualizar os valores de itens de Pedido antes de aplicar os
+		// novos valores, dado que a atualização em si depende de a entidade já ter sido atualizada no banco
+		boolean doAtualizarValores = !itemVenda.getValorBase().equals(existente.getValorBase());
+
 		existente.setNome(itemVenda.getNome());
 		existente.setValorBase(itemVenda.getValorBase());
 		existente.setAtivo(itemVenda.isAtivo());
 
-		// TODO: implementar recálculo de valores de ItemPedido associados a este ItemVenda e que estejam em pedidos em aberto
+		existente = itemVendaRepository.save(existente);
 
-		return itemVendaRepository.save(existente);
+		if (doAtualizarValores) {
+			itemPedidoService.atualizarValores(existente);
+		}
+		return existente;
 	}
 
 	@Override

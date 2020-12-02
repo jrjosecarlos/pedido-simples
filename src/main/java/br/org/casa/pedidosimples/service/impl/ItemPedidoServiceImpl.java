@@ -75,6 +75,17 @@ public class ItemPedidoServiceImpl implements ItemPedidoService {
 	}
 
 	@Override
+	@Transactional
+	public void atualizarValores(ItemVenda itemVenda) {
+		ItemVenda itemVendaExistente = itemVendaService.buscarPorId(itemVenda.getId())
+				.orElseThrow(() -> new EntidadeNaoEncontradaException(ItemVenda.NOME_EXIBICAO_ENTIDADE, itemVenda.getId()));
+
+		itemPedidoRepository.buscarPorItemVendaEPedidoAtivo(itemVendaExistente)
+			.stream()
+			.forEach(ItemPedido::calcularValor);
+	}
+
+	@Override
 	public Optional<ItemPedido> buscarPorId(UUID uuid) {
 		return itemPedidoRepository.findById(uuid);
 	}

@@ -76,4 +76,14 @@ public class CustomItemPedidoRepositoryImpl extends QuerydslRepositorySupport
 				.fetchCount();
 	}
 
+	@Override
+	public List<ItemPedido> buscarPorItemVendaEPedidoAtivo(ItemVenda itemVenda) {
+		return from(itemPedido)
+				.where(itemPedido.itemVenda.eq(itemVenda)
+						.and(itemPedido.pedido.situacao.eq(SituacaoPedido.ABERTO)))
+				.innerJoin(itemPedido.pedido).fetchJoin()
+				.innerJoin(itemPedido.itemVenda).fetchJoin()
+				.fetch();
+	}
+
 }
