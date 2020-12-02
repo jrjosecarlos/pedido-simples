@@ -3,6 +3,7 @@
  */
 package br.org.casa.pedidosimples.service.impl;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -69,8 +70,21 @@ public class ItemPedidoServiceImpl implements ItemPedidoService {
 			throw new OperacaoInvalidaException("Não é possível atualizar os valores de um Pedido fechado");
 		}
 
-		itemPedidoRepository.findByPedido(pedidoExistente)
-			.stream()
+		List<ItemPedido> itensPedido = itemPedidoRepository.findByPedido(pedidoExistente);
+
+		itensPedido.stream()
+			.map(ItemPedido::getItemVenda)
+			.filter(iv -> !iv.isAtivo())
+			.findAny()
+			.ifPresent(iv -> {
+				throw new OperacaoInvalidaException(String.format("Não é possível atualizar valores do %s %s, pois ele está associado a algum %s inativo",
+						Pedido.NOME_EXIBICAO_ENTIDADE,
+						pedido.getId(),
+						ItemVenda.NOME_EXIBICAO_ENTIDADE
+					));
+			});
+
+		itensPedido.stream()
 			.forEach(ItemPedido::calcularValor);
 	}
 
@@ -79,6 +93,13 @@ public class ItemPedidoServiceImpl implements ItemPedidoService {
 	public void atualizarValores(ItemVenda itemVenda) {
 		ItemVenda itemVendaExistente = itemVendaService.buscarPorId(itemVenda.getId())
 				.orElseThrow(() -> new EntidadeNaoEncontradaException(ItemVenda.NOME_EXIBICAO_ENTIDADE, itemVenda.getId()));
+
+		if (!itemVenda.isAtivo()) {
+			throw new OperacaoInvalidaException(String.format("Não é possível atualizar os valores de %s por %s, pois este está inativo",
+						ItemPedido.NOME_EXIBICAO_ENTIDADE,
+						ItemVenda.NOME_EXIBICAO_ENTIDADE
+					));
+		}
 
 		itemPedidoRepository.buscarPorItemVendaEPedidoAberto(itemVendaExistente)
 			.stream()
