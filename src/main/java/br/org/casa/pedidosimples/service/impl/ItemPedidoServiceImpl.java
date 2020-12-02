@@ -81,8 +81,8 @@ public class ItemPedidoServiceImpl implements ItemPedidoService {
 	@Override
 	@Transactional
 	public void excluir(UUID uuid) {
-		// TODO Auto-generated method stub
-
+		itemPedidoRepository.delete(itemPedidoRepository.findById(uuid)
+				.orElseThrow(() -> new EntidadeNaoEncontradaException(ItemPedido.NOME_EXIBICAO_ENTITDADE, uuid)));
 	}
 
 }
