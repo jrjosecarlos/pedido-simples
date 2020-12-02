@@ -14,6 +14,7 @@ import br.org.casa.pedidosimples.exception.EntidadeNaoEncontradaException;
 import br.org.casa.pedidosimples.model.ItemPedido;
 import br.org.casa.pedidosimples.model.ItemVenda;
 import br.org.casa.pedidosimples.model.Pedido;
+import br.org.casa.pedidosimples.model.enumeration.SituacaoPedido;
 
 /**
  * Contrato para os serviços relacionados a {@link ItemPedido}.
@@ -71,5 +72,15 @@ public interface ItemPedidoService {
 	 * @throws EntidadeNaoEncontradaException se não existir ItemPedido com o uuid informado
 	 */
 	void excluir(UUID uuid);
+
+	/**
+	 * Retorna o número de {@link ItemPedido} associados ao {@link ItemVenda} informado
+	 * e que sejam de {@link Pedido}s em {@link SituacaoPedido#ABERTO aberto}.
+	 *
+	 * @param itemVenda o itemVenda que se deseja buscar
+	 * @return a quantidade de ItemPedido associada a este itemVenda e que estejam em
+	 * pedidos em aberto. Maior ou igual a zero.
+	 */
+	long contarPorItemVendaEPedidoAtivo(ItemVenda itemVenda);
 
 }

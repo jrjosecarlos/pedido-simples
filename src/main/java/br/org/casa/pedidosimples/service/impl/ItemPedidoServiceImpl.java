@@ -42,11 +42,11 @@ public class ItemPedidoServiceImpl implements ItemPedidoService {
 	@Autowired
 	private PedidoService pedidoService;
 
-	private final ItemVendaService itemVendaService;
+	@Autowired
+	private ItemVendaService itemVendaService;
 
-	ItemPedidoServiceImpl(ItemPedidoRepository itemPedidoRepository, ItemVendaService itemVendaService) {
+	ItemPedidoServiceImpl(ItemPedidoRepository itemPedidoRepository) {
 		this.itemPedidoRepository = itemPedidoRepository;
-		this.itemVendaService = itemVendaService;
 	}
 
 	@Override
@@ -100,6 +100,11 @@ public class ItemPedidoServiceImpl implements ItemPedidoService {
 	public void excluir(UUID uuid) {
 		itemPedidoRepository.delete(itemPedidoRepository.findById(uuid)
 				.orElseThrow(() -> new EntidadeNaoEncontradaException(ItemPedido.NOME_EXIBICAO_ENTITDADE, uuid)));
+	}
+
+	@Override
+	public long contarPorItemVendaEPedidoAtivo(ItemVenda itemVenda) {
+		return itemPedidoRepository.contarPorItemVendaEPedidoAtivo(itemVenda);
 	}
 
 }

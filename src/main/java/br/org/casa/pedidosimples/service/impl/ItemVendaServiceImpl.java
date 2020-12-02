@@ -6,8 +6,8 @@ package br.org.casa.pedidosimples.service.impl;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Supplier;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -16,9 +16,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.querydsl.core.types.dsl.BooleanExpression;
 
 import br.org.casa.pedidosimples.exception.EntidadeNaoEncontradaException;
+import br.org.casa.pedidosimples.exception.OperacaoInvalidaException;
 import br.org.casa.pedidosimples.model.ItemVenda;
+import br.org.casa.pedidosimples.model.Pedido;
 import br.org.casa.pedidosimples.repository.ItemVendaPredicateBuilder;
 import br.org.casa.pedidosimples.repository.ItemVendaRepository;
+import br.org.casa.pedidosimples.service.ItemPedidoService;
 import br.org.casa.pedidosimples.service.ItemVendaService;
 
 /**
@@ -32,6 +35,9 @@ import br.org.casa.pedidosimples.service.ItemVendaService;
 public class ItemVendaServiceImpl implements ItemVendaService {
 
 	private final ItemVendaRepository itemVendaRepository;
+
+	@Autowired
+	private ItemPedidoService itemPedidoService;
 
 	ItemVendaServiceImpl(ItemVendaRepository itemVendaRepository) {
 		this.itemVendaRepository = itemVendaRepository;
@@ -60,29 +66,38 @@ public class ItemVendaServiceImpl implements ItemVendaService {
 	@Override
 	@Transactional
 	public ItemVenda alterar(UUID uuid, ItemVenda itemVenda) {
-		return itemVendaRepository.findById(uuid)
-				.map(iv -> {
-					itemVenda.setId(uuid);
-					return itemVendaRepository.save(itemVenda);
-				}).orElseThrow(gerarEntidadeNaoEncontradaException(uuid));
+		ItemVenda existente = itemVendaRepository.findById(uuid)
+				.orElseThrow(() -> new EntidadeNaoEncontradaException(ItemVenda.NOME_EXIBICAO_ENTIDADE, uuid));
+
+		if (!itemVenda.getTipo().equals(existente.getTipo())) {
+			throw new OperacaoInvalidaException(String.format("Não é possível alterar o tipo de um %s", ItemVenda.NOME_EXIBICAO_ENTIDADE));
+		}
+
+		if ((itemVenda.isAtivo() == false) && (itemVenda.isAtivo() != existente.isAtivo())) {
+			long itensPedidoAbertos = itemPedidoService.contarPorItemVendaEPedidoAtivo(itemVenda);
+			if (itensPedidoAbertos > 0L) {
+				throw new OperacaoInvalidaException(String.format("Não é possível desativar o %s, pois está associado "
+						+ "a algum %s em aberto. Total de itens em aberto: %d",
+						ItemVenda.NOME_EXIBICAO_ENTIDADE,
+						Pedido.NOME_EXIBICAO_ENTIDADE,
+						itensPedidoAbertos));
+			}
+		}
+
+		existente.setNome(itemVenda.getNome());
+		existente.setValorBase(itemVenda.getValorBase());
+		existente.setAtivo(itemVenda.isAtivo());
+
+		// TODO: implementar recálculo de valores de ItemPedido associados a este ItemVenda e que estejam em pedidos em aberto
+
+		return itemVendaRepository.save(existente);
 	}
 
 	@Override
 	@Transactional
 	public void excluir(UUID uuid) {
 		itemVendaRepository.delete(itemVendaRepository.findById(uuid)
-			.orElseThrow(gerarEntidadeNaoEncontradaException(uuid)));
-	}
-
-	/**
-	 * Método de facilidade para criar {@link EntidadeNaoEncontradaException} relacionados à {@link ItemVenda};
-	 *
-	 * @param uuid uuid a ser exibido na exceção
-	 * @return um {@link Supplier} que cria exceções com o nome da entidade fixo e o uuid informado.
-	 * @see EntidadeNaoEncontradaException#EntidadeNaoEncontradaException(String, UUID)
-	 */
-	private Supplier<EntidadeNaoEncontradaException> gerarEntidadeNaoEncontradaException(UUID uuid) {
-		return () -> new EntidadeNaoEncontradaException(ItemVenda.NOME_EXIBICAO_ENTIDADE, uuid);
+			.orElseThrow(() -> new EntidadeNaoEncontradaException(ItemVenda.NOME_EXIBICAO_ENTIDADE, uuid)));
 	}
 
 }

@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import com.querydsl.core.types.dsl.BooleanExpression;
 
 import br.org.casa.pedidosimples.model.ItemPedido;
+import br.org.casa.pedidosimples.model.ItemVenda;
 import br.org.casa.pedidosimples.model.Pedido;
 
 /**
@@ -35,4 +36,5 @@ public interface CustomItemPedidoRepository<S extends ItemPedido, ID> {
 
 	Optional<S> findById(ID id);
 
+	long contarPorItemVendaEPedidoAtivo(ItemVenda itemVenda);
 }

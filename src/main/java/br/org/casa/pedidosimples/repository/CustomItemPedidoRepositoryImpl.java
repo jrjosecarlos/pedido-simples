@@ -16,8 +16,10 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPQLQuery;
 
 import br.org.casa.pedidosimples.model.ItemPedido;
+import br.org.casa.pedidosimples.model.ItemVenda;
 import br.org.casa.pedidosimples.model.Pedido;
 import br.org.casa.pedidosimples.model.QItemPedido;
+import br.org.casa.pedidosimples.model.enumeration.SituacaoPedido;
 
 /**
  * Implementação das queries customizadas para {@link ItemPedido}.
@@ -64,6 +66,14 @@ public class CustomItemPedidoRepositoryImpl extends QuerydslRepositorySupport
 			.innerJoin(itemPedido.pedido).fetchJoin()
 			.innerJoin(itemPedido.itemVenda).fetchJoin()
 			.fetchOne() );
+	}
+
+	@Override
+	public long contarPorItemVendaEPedidoAtivo(ItemVenda itemVenda) {
+		return from(itemPedido)
+				.where(itemPedido.itemVenda.eq(itemVenda)
+						.and(itemPedido.pedido.situacao.eq(SituacaoPedido.ABERTO)))
+				.fetchCount();
 	}
 
 }
