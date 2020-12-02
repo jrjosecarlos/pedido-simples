@@ -17,7 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.querydsl.core.types.dsl.BooleanExpression;
 
 import br.org.casa.pedidosimples.exception.EntidadeNaoEncontradaException;
+import br.org.casa.pedidosimples.exception.OperacaoInvalidaException;
 import br.org.casa.pedidosimples.model.Pedido;
+import br.org.casa.pedidosimples.model.enumeration.SituacaoPedido;
 import br.org.casa.pedidosimples.repository.PedidoPredicateBuilder;
 import br.org.casa.pedidosimples.repository.PedidoRepository;
 import br.org.casa.pedidosimples.service.ItemPedidoService;
@@ -82,13 +84,15 @@ public class PedidoServiceImpl implements PedidoService {
 	@Transactional
 	public Pedido aplicarDesconto(UUID uuid, BigDecimal fatorDesconto) {
 		Pedido pedido = pedidoRepository.findById(uuid)
-				.map(p -> {
-					p.setFatorDesconto(fatorDesconto);
-					return pedidoRepository.save(p);
-				})
 				.orElseThrow(() -> new EntidadeNaoEncontradaException(Pedido.NOME_EXIBICAO_ENTIDADE, uuid));
 
-		itemPedidoService.atualizarValores(pedido);
+		if (SituacaoPedido.FECHADO.equals(pedido.getSituacao())) {
+			throw new OperacaoInvalidaException(String.format("Não é possível alterar o fator de desconto de um %s fechado",
+					Pedido.NOME_EXIBICAO_ENTIDADE));
+		}
+
+		pedido.setFatorDesconto(fatorDesconto);
+		itemPedidoService.atualizarValores(pedidoRepository.save(pedido));
 
 		return pedido;
 	}
