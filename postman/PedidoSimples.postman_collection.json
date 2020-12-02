@@ -1,0 +1,426 @@
+{
+	"info": {
+		"_postman_id": "5472c110-4834-45a6-8c58-3beb38a36290",
+		"name": "PedidoSimples",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "ItemVenda",
+			"item": [
+				{
+					"name": "GET itensVenda",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostname}}{{basePath}}/itens-venda",
+							"host": [
+								"{{hostname}}{{basePath}}"
+							],
+							"path": [
+								"itens-venda"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET itemVenda",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostname}}{{basePath}}/item-venda/d1293916-d146-4805-8756-ec1527d2c3a2",
+							"host": [
+								"{{hostname}}{{basePath}}"
+							],
+							"path": [
+								"item-venda",
+								"d1293916-d146-4805-8756-ec1527d2c3a2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT itemVenda",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"d1293916-d146-4805-8756-ec1527d2c3a2\",\r\n    \"nome\": \"Produto Interativo 1\",\r\n    \"tipo\": \"P\",\r\n    \"valorBase\": 50.00,\r\n    \"ativo\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostname}}{{basePath}}/item-venda/d1293916-d146-4805-8756-ec1527d2c3a2",
+							"host": [
+								"{{hostname}}{{basePath}}"
+							],
+							"path": [
+								"item-venda",
+								"d1293916-d146-4805-8756-ec1527d2c3a2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST itemVenda",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nome\": \"feijão\",\r\n    \"valorBase\": 5.2,\r\n    \"tipo\": \"P\",\r\n    \"ativo\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostname}}{{basePath}}/item-venda",
+							"host": [
+								"{{hostname}}{{basePath}}"
+							],
+							"path": [
+								"item-venda"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE itemVenda",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nome\": \"feijão\",\r\n    \"valorBase\": 5.50\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostname}}{{basePath}}/item-venda/ebc9eef6-a51c-4712-99ee-32cb58cb254d",
+							"host": [
+								"{{hostname}}{{basePath}}"
+							],
+							"path": [
+								"item-venda",
+								"ebc9eef6-a51c-4712-99ee-32cb58cb254d"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Pedido",
+			"item": [
+				{
+					"name": "GET pedidos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostname}}{{basePath}}/pedidos",
+							"host": [
+								"{{hostname}}{{basePath}}"
+							],
+							"path": [
+								"pedidos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET pedido",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostname}}{{basePath}}/pedido/5bf303ed-8104-44d5-a28d-191c679465cd",
+							"host": [
+								"{{hostname}}{{basePath}}"
+							],
+							"path": [
+								"pedido",
+								"5bf303ed-8104-44d5-a28d-191c679465cd"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT pedido",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"5bf303ed-8104-44d5-a28d-191c679465cd\",\r\n    \"codigo\": \"pedi-072\",\r\n    \"fatorDesconto\": 1.00,\r\n    \"situacao\": \"A\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostname}}{{basePath}}/pedido/dbbd2adc-3bda-45d7-bf47-172dac89ec3c",
+							"host": [
+								"{{hostname}}{{basePath}}"
+							],
+							"path": [
+								"pedido",
+								"dbbd2adc-3bda-45d7-bf47-172dac89ec3c"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT pedido-aplicar-desconto",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"fatorDesconto\": 0.50\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostname}}{{basePath}}/pedido/5bf303ed-8104-44d5-a28d-191c679465cd/aplicar-desconto",
+							"host": [
+								"{{hostname}}{{basePath}}"
+							],
+							"path": [
+								"pedido",
+								"5bf303ed-8104-44d5-a28d-191c679465cd",
+								"aplicar-desconto"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST pedido",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"codigo\": \"nvpedido\",\r\n    \"fatorDesconto\": 0.75,\r\n    \"situacao\": \"A\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostname}}{{basePath}}/pedido",
+							"host": [
+								"{{hostname}}{{basePath}}"
+							],
+							"path": [
+								"pedido"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST pedido-fechar",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{hostname}}{{basePath}}/pedido/dbbd2adc-3bda-45d7-bf47-172dac89ec3c/fechar",
+							"host": [
+								"{{hostname}}{{basePath}}"
+							],
+							"path": [
+								"pedido",
+								"dbbd2adc-3bda-45d7-bf47-172dac89ec3c",
+								"fechar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE pedido",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nome\": \"feijão\",\r\n    \"valorBase\": 5.50\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostname}}{{basePath}}/pedido/5bf303ed-8104-44d5-a28d-191c679465cd",
+							"host": [
+								"{{hostname}}{{basePath}}"
+							],
+							"path": [
+								"pedido",
+								"5bf303ed-8104-44d5-a28d-191c679465cd"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "ItemPedido",
+			"item": [
+				{
+					"name": "GET itensPedido",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostname}}{{basePath}}/pedido/dbbd2adc-3bda-45d7-bf47-172dac89ec3c/itens-pedido",
+							"host": [
+								"{{hostname}}{{basePath}}"
+							],
+							"path": [
+								"pedido",
+								"dbbd2adc-3bda-45d7-bf47-172dac89ec3c",
+								"itens-pedido"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET itemPedido",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostname}}{{basePath}}/item-pedido/7a1eb3ab-a8d7-405c-a347-eaee4bea60cd",
+							"host": [
+								"{{hostname}}{{basePath}}"
+							],
+							"path": [
+								"item-pedido",
+								"7a1eb3ab-a8d7-405c-a347-eaee4bea60cd"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST itemPedido",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"a97245b4-566d-4cfd-9d89-7492dc5c6a48\",\r\n    \"nome\": \"Produto Ativo 2\",\r\n    \"tipo\": \"P\",\r\n    \"valorBase\": 55.00,\r\n    \"ativo\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostname}}{{basePath}}/pedido/dbbd2adc-3bda-45d7-bf47-172dac89ec3c/item-pedido",
+							"host": [
+								"{{hostname}}{{basePath}}"
+							],
+							"path": [
+								"pedido",
+								"dbbd2adc-3bda-45d7-bf47-172dac89ec3c",
+								"item-pedido"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE itemPedido",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nome\": \"feijão\",\r\n    \"valorBase\": 5.50\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostname}}{{basePath}}/item-pedido/7a1eb3ab-a8d7-405c-a347-eaee4bea60cd",
+							"host": [
+								"{{hostname}}{{basePath}}"
+							],
+							"path": [
+								"item-pedido",
+								"7a1eb3ab-a8d7-405c-a347-eaee4bea60cd"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "f784b4ec-db22-4e7b-b79c-2dd2d1058dd0",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "bd7ad63e-921d-404e-ac23-391385416958",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"variable": [
+		{
+			"id": "9238f13b-d3ad-4342-aef6-86d262b34fdd",
+			"key": "basePath",
+			"value": "/pedido-simples/api"
+		}
+	],
+	"protocolProfileBehavior": {}
+}
