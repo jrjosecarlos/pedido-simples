@@ -37,13 +37,14 @@ import br.org.casa.pedidosimples.service.PedidoService;
 @Transactional(readOnly = true)
 public class PedidoServiceImpl implements PedidoService {
 
-	private final PedidoRepository pedidoRepository;
+	@Autowired
+	private PedidoRepository pedidoRepository;
 
 	@Autowired
 	private ItemPedidoService itemPedidoService;
 
-	PedidoServiceImpl(PedidoRepository pedidoRepository) {
-		this.pedidoRepository = pedidoRepository;
+	PedidoServiceImpl() {
+
 	}
 
 	@Override

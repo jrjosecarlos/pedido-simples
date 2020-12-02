@@ -42,6 +42,7 @@ import br.org.casa.pedidosimples.service.ItemPedidoService;
 import br.org.casa.pedidosimples.service.ItemVendaService;
 
 /**
+ * Classe de testes para {@link ItemVendaServiceImpl}.
  *
  * @author jrjosecarlos
  *
@@ -62,7 +63,7 @@ public class ItemVendaServiceImplTest {
     static class ItemVendaServiceImplTestContextConfiguration {
 
         @Bean
-        public ItemVendaService employeeService() {
+        public ItemVendaService itemVendaService() {
             return new ItemVendaServiceImpl();
         }
     }
