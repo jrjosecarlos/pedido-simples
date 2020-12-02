@@ -95,4 +95,13 @@ public interface ItemPedidoService {
 	 */
 	long contarPorItemVendaEPedidoAtivo(ItemVenda itemVenda);
 
+	/**
+	 * Retorna o número de {@link ItemPedido} associados ao {@link ItemVenda} informado,
+	 * independente da situação do {@link Pedido} associado.
+	 *
+	 * @param itemVenda o itemVenda que se deseja buscar
+	 * @return a quantidade de ItemPedido associada a este itemVenda. Maior ou igual a zero.
+	 */
+	long contarPorItemVenda(ItemVenda itemVenda);
+
 }

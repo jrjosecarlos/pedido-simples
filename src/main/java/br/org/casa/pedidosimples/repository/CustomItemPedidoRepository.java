@@ -39,4 +39,5 @@ public interface CustomItemPedidoRepository<S extends ItemPedido, ID> {
 	long contarPorItemVendaEPedidoAtivo(ItemVenda itemVenda);
 
 	List<S> buscarPorItemVendaEPedidoAtivo(ItemVenda itemVenda);
+
 }

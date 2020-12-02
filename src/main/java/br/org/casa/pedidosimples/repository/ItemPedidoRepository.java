@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
 import br.org.casa.pedidosimples.model.ItemPedido;
+import br.org.casa.pedidosimples.model.ItemVenda;
 
 /**
  * Definição de repositório para {@link ItemPedido}.
@@ -18,5 +19,5 @@ import br.org.casa.pedidosimples.model.ItemPedido;
  */
 public interface ItemPedidoRepository extends JpaRepository<ItemPedido, UUID>, QuerydslPredicateExecutor<ItemPedido>,
 	CustomItemPedidoRepository<ItemPedido, UUID> {
-
+	long countByItemVenda(ItemVenda itemVenda);
 }

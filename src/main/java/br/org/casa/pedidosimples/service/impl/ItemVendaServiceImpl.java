@@ -73,7 +73,7 @@ public class ItemVendaServiceImpl implements ItemVendaService {
 			throw new OperacaoInvalidaException(String.format("Não é possível alterar o tipo de um %s", ItemVenda.NOME_EXIBICAO_ENTIDADE));
 		}
 
-		if ((itemVenda.isAtivo() == false) && (itemVenda.isAtivo() != existente.isAtivo())) {
+		if ( (!itemVenda.isAtivo()) && (existente.isAtivo()) ) {
 			long itensPedidoAbertos = itemPedidoService.contarPorItemVendaEPedidoAtivo(itemVenda);
 			if (itensPedidoAbertos > 0L) {
 				throw new OperacaoInvalidaException(String.format("Não é possível desativar o %s, pois está associado "
@@ -103,8 +103,20 @@ public class ItemVendaServiceImpl implements ItemVendaService {
 	@Override
 	@Transactional
 	public void excluir(UUID uuid) {
-		itemVendaRepository.delete(itemVendaRepository.findById(uuid)
-			.orElseThrow(() -> new EntidadeNaoEncontradaException(ItemVenda.NOME_EXIBICAO_ENTIDADE, uuid)));
+		ItemVenda itemVenda = itemVendaRepository.findById(uuid)
+				.orElseThrow(() -> new EntidadeNaoEncontradaException(ItemVenda.NOME_EXIBICAO_ENTIDADE, uuid));
+
+		long itensPedidoAssociados = itemPedidoService.contarPorItemVenda(itemVenda);
+
+		if (itensPedidoAssociados > 0L) {
+			throw new OperacaoInvalidaException(String.format("Não é possível excluir este %s, pois ele está associado "
+					+ "a algum %s. Total de %d associaç%s.",
+					ItemVenda.NOME_EXIBICAO_ENTIDADE,
+					Pedido.NOME_EXIBICAO_ENTIDADE,
+					itensPedidoAssociados,
+					itensPedidoAssociados == 1 ? "ão" : "ões"));
+		}
+		itemVendaRepository.delete(itemVenda);
 	}
 
 }

@@ -118,4 +118,9 @@ public class ItemPedidoServiceImpl implements ItemPedidoService {
 		return itemPedidoRepository.contarPorItemVendaEPedidoAtivo(itemVenda);
 	}
 
+	@Override
+	public long contarPorItemVenda(ItemVenda itemVenda) {
+		return itemPedidoRepository.countByItemVenda(itemVenda);
+	}
+
 }
