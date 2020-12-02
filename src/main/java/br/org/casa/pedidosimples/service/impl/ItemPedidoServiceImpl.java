@@ -137,4 +137,9 @@ public class ItemPedidoServiceImpl implements ItemPedidoService {
 		return itemPedidoRepository.countByItemVenda(itemVenda);
 	}
 
+	@Override
+	public long excluirPorPedido(Pedido pedido) {
+		return itemPedidoRepository.deleteByPedido(pedido);
+	}
+
 }

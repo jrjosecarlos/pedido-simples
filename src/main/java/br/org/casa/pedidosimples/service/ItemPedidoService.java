@@ -104,4 +104,12 @@ public interface ItemPedidoService {
 	 */
 	long contarPorItemVenda(ItemVenda itemVenda);
 
+	/**
+	 * Exclui todos os {@link ItemPedido}s de um certo {@link Pedido}.
+	 *
+	 * @param pedido o pedido que terá os ItemPedido excluídos
+	 * @return o número de itensPedido excluídos
+	 */
+	long excluirPorPedido(Pedido pedido);
+
 }

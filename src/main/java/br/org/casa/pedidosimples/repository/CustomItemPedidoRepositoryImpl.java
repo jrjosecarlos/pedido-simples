@@ -86,4 +86,11 @@ public class CustomItemPedidoRepositoryImpl extends QuerydslRepositorySupport
 				.fetch();
 	}
 
+	@Override
+	public long deleteByPedido(Pedido pedido) {
+		return delete(itemPedido)
+				.where(itemPedido.pedido.eq(pedido))
+				.execute();
+	}
+
 }

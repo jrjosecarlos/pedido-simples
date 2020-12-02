@@ -76,8 +76,11 @@ public class PedidoServiceImpl implements PedidoService {
 	@Override
 	@Transactional
 	public void excluir(UUID uuid) {
-		pedidoRepository.delete(pedidoRepository.findById(uuid)
-				.orElseThrow(() -> new EntidadeNaoEncontradaException(Pedido.NOME_EXIBICAO_ENTIDADE, uuid)));
+		Pedido pedido = pedidoRepository.findById(uuid)
+				.orElseThrow(() -> new EntidadeNaoEncontradaException(Pedido.NOME_EXIBICAO_ENTIDADE, uuid));
+
+		itemPedidoService.excluirPorPedido(pedido);
+		pedidoRepository.delete(pedido);
 	}
 
 	@Override
