@@ -104,6 +104,14 @@ public class ItemPedidoServiceImpl implements ItemPedidoService {
 					Pedido.NOME_EXIBICAO_ENTIDADE
 					));
 		}
+
+		if (SituacaoPedido.FECHADO.equals(pedido.getSituacao())) {
+			throw new OperacaoInvalidaException(String.format("Não é possível adicionar um %s a um %s fechado.",
+					ItemVenda.NOME_EXIBICAO_ENTIDADE,
+					Pedido.NOME_EXIBICAO_ENTIDADE
+					));
+		}
+
 		ItemPedido itemPedido = new ItemPedido();
 		itemPedido.setPedido(pedido);
 		itemPedido.setItemVenda(itemVendaExistente);
