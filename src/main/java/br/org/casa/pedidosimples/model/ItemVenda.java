@@ -122,7 +122,7 @@ public class ItemVenda extends BaseEntity {
 	 *
 	 * @return valor de ativo
 	 */
-	public Boolean getAtivo() {
+	public Boolean isAtivo() {
 		return ativo;
 	}
 

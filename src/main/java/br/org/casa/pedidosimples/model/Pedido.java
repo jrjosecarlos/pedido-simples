@@ -48,7 +48,7 @@ public class Pedido extends BaseEntity {
 	@NotNull
 	@DecimalMin(value = "0.00", inclusive = true)
 	@DecimalMax(value = "1.00", inclusive = true)
-	@Digits(integer = 0, fraction = 2)
+	@Digits(integer = 1, fraction = 2)
 	private BigDecimal fatorDesconto;
 
 	@Column(name = "situacao", nullable = false)
@@ -110,6 +110,9 @@ public class Pedido extends BaseEntity {
 	}
 
 	public enum ParametroBuscaPedido {
+		/**
+		 * Busca por qualquer pedaço do código do {@link Pedido}.
+		 */
 		CODIGO("codigo") {
 			@Override
 			public BooleanExpression getPredicate(String valor) {
@@ -117,6 +120,10 @@ public class Pedido extends BaseEntity {
 			}
 		},
 
+		/**
+		 * Busca {@link Pedido}s com uma {@link SituacaoPedido situação} específica, através
+		 * de seus códigos.
+		 */
 		SITUACAO("situacao") {
 			@Override
 			public BooleanExpression getPredicate(String valor) {

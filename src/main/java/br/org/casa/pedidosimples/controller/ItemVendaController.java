@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.org.casa.pedidosimples.exception.EntidadeNaoEncontradaException;
+import br.org.casa.pedidosimples.exception.RequisicaoInvalidaException;
 import br.org.casa.pedidosimples.model.ItemVenda;
 import br.org.casa.pedidosimples.service.ItemVendaService;
 
@@ -65,10 +66,12 @@ public class ItemVendaController {
 	}
 
 	@PutMapping("/item-venda/{uuid}")
-	ResponseEntity<ItemVenda> atualizarItemVenda(@RequestBody ItemVenda itemVenda, @PathVariable("uuid") UUID uuid) {
-		ItemVenda atualizado = service.alterar(uuid, itemVenda);
+	ResponseEntity<ItemVenda> atualizarItemVenda(@RequestBody @Valid ItemVenda itemVenda, @PathVariable("uuid") UUID uuid) {
+		if (!uuid.equals(itemVenda.getId())) {
+			throw new RequisicaoInvalidaException("O uuid do %s na url é diferente do no payload", ItemVenda.NOME_EXIBICAO_ENTIDADE);
+		}
 
-		return ResponseEntity.ok(atualizado);
+		return ResponseEntity.ok(service.alterar(uuid, itemVenda));
 	}
 
 	@DeleteMapping("/item-venda/{uuid}")

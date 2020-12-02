@@ -34,11 +34,11 @@ public enum TipoItemVenda {
 
 	private String valor;
 
-	private BigDecimal fatorDesconto;
+	private BigDecimal fatorAplicacaoDesconto;
 
-	private TipoItemVenda(String valor, BigDecimal fatorDesconto) {
+	private TipoItemVenda(String valor, BigDecimal fatorAplicacaoDesconto) {
 		this.valor = valor;
-		this.fatorDesconto = fatorDesconto;
+		this.fatorAplicacaoDesconto = fatorAplicacaoDesconto;
 	}
 
 	/**
@@ -52,12 +52,12 @@ public enum TipoItemVenda {
 	}
 
 	/**
-	 * Retorna o valor atual do campo fatorDesconto.
+	 * Retorna o valor atual do campo fatorAplicacaoDesconto.
 	 *
-	 * @return valor de fatorDesconto
+	 * @return valor de fatorAplicacaoDesconto
 	 */
-	public BigDecimal getFatorDesconto() {
-		return fatorDesconto;
+	public BigDecimal getFatorAplicacaoDesconto() {
+		return fatorAplicacaoDesconto;
 	}
 
 	/**

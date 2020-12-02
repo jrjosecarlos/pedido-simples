@@ -15,7 +15,9 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import br.org.casa.pedidosimples.exception.EntidadeNaoEncontradaException;
+import br.org.casa.pedidosimples.exception.OperacaoInvalidaException;
 import br.org.casa.pedidosimples.exception.ParametroBuscaParseException;
+import br.org.casa.pedidosimples.exception.RequisicaoInvalidaException;
 import br.org.casa.pedidosimples.model.ErroHttpSimples;
 
 /**
@@ -32,6 +34,18 @@ public class RestControllerResponseEntityExceptionHandler extends ResponseEntity
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
 		ErroHttpSimples erro = new ErroHttpSimples(status, "Erro na leitura da requisição", ex.getMessage());
 		return super.handleExceptionInternal(ex, erro, headers, status, request);
+	}
+
+	@Override
+	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+			HttpHeaders headers, HttpStatus status, WebRequest request) {
+		FieldError fieldError = ex.getFieldError();
+
+		ErroHttpSimples erro = new ErroHttpSimples(status, "Erro de validação",
+				String.format("Campo [ %s ] (valor recebido [ %s ]). Mensagem de erro: %s",
+						fieldError.getField(), fieldError.getRejectedValue(), fieldError.getDefaultMessage()));
+
+		return super.handleExceptionInternal(ex, erro, new HttpHeaders(), status, request);
 	}
 
 	@ExceptionHandler(value = {EntidadeNaoEncontradaException.class} )
@@ -51,18 +65,23 @@ public class RestControllerResponseEntityExceptionHandler extends ResponseEntity
 		return super.handleExceptionInternal(ex, erro, new HttpHeaders(), status, request);
 	}
 
-	@Override
-	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-			HttpHeaders headers, HttpStatus status, WebRequest request) {
-		HttpStatus statusEfetivo = HttpStatus.UNPROCESSABLE_ENTITY;
+	@ExceptionHandler(value = {OperacaoInvalidaException.class})
+	protected ResponseEntity<Object> handleOperacaoInvalida(OperacaoInvalidaException ex,
+			WebRequest request) {
+		HttpStatus status = HttpStatus.BAD_REQUEST;
+		ErroHttpSimples erro = new ErroHttpSimples(status, "Operação inválida", ex.getMessage());
 
-		FieldError fieldError = ex.getFieldError();
+		return super.handleExceptionInternal(ex, erro, new HttpHeaders(), status, request);
 
-		ErroHttpSimples erro = new ErroHttpSimples(statusEfetivo, "Erro de validação",
-				String.format("Campo [ %s ] (valor recebido [ %s ]). Mensagem de erro: %s",
-						fieldError.getField(), fieldError.getRejectedValue(), fieldError.getDefaultMessage()));
-
-		return super.handleExceptionInternal(ex, erro, new HttpHeaders(), statusEfetivo, request);
 	}
 
+	@ExceptionHandler(value = {RequisicaoInvalidaException.class})
+	protected ResponseEntity<Object> handleRequisicaoInvalida(RequisicaoInvalidaException ex,
+			WebRequest request) {
+		HttpStatus status = HttpStatus.BAD_REQUEST;
+		ErroHttpSimples erro = new ErroHttpSimples(status, "Requisição inválida", ex.getMessage());
+
+		return super.handleExceptionInternal(ex, erro, new HttpHeaders(), status, request);
+
+	}
 }

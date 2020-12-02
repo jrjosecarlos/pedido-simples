@@ -1,5 +1,7 @@
 package br.org.casa.pedidosimples.model.enumeration;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 import br.org.casa.pedidosimples.model.Pedido;
 import br.org.casa.pedidosimples.util.EnumUtil;
 
@@ -36,6 +38,7 @@ public enum SituacaoPedido {
 	 *
 	 * @return valor de valor
 	 */
+	@JsonValue
 	public String getValor() {
 		return valor;
 	}
