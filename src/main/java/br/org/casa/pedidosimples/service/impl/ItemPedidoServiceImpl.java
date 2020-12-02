@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -15,9 +16,11 @@ import org.springframework.transaction.annotation.Transactional;
 import com.querydsl.core.types.dsl.BooleanExpression;
 
 import br.org.casa.pedidosimples.exception.EntidadeNaoEncontradaException;
+import br.org.casa.pedidosimples.exception.OperacaoInvalidaException;
 import br.org.casa.pedidosimples.model.ItemPedido;
 import br.org.casa.pedidosimples.model.ItemVenda;
 import br.org.casa.pedidosimples.model.Pedido;
+import br.org.casa.pedidosimples.model.enumeration.SituacaoPedido;
 import br.org.casa.pedidosimples.repository.ItemPedidoPredicateBuilder;
 import br.org.casa.pedidosimples.repository.ItemPedidoRepository;
 import br.org.casa.pedidosimples.service.ItemPedidoService;
@@ -36,14 +39,13 @@ public class ItemPedidoServiceImpl implements ItemPedidoService {
 
 	private final ItemPedidoRepository itemPedidoRepository;
 
-	private final PedidoService pedidoService;
+	@Autowired
+	private PedidoService pedidoService;
 
 	private final ItemVendaService itemVendaService;
 
-	ItemPedidoServiceImpl(ItemPedidoRepository itemPedidoRepository, PedidoService pedidoService,
-			ItemVendaService itemVendaService) {
+	ItemPedidoServiceImpl(ItemPedidoRepository itemPedidoRepository, ItemVendaService itemVendaService) {
 		this.itemPedidoRepository = itemPedidoRepository;
-		this.pedidoService = pedidoService;
 		this.itemVendaService = itemVendaService;
 	}
 
@@ -55,6 +57,21 @@ public class ItemPedidoServiceImpl implements ItemPedidoService {
 		BooleanExpression predicate = ItemPedidoPredicateBuilder.of(parametrosBusca)
 				.build();
 		return itemPedidoRepository.findByPedido(pedido, predicate, pageable);
+	}
+
+	@Override
+	@Transactional
+	public void atualizarValores(Pedido pedido) {
+		Pedido pedidoExistente = pedidoService.buscarPorId(pedido.getId())
+				.orElseThrow(() -> new EntidadeNaoEncontradaException(Pedido.NOME_EXIBICAO_ENTIDADE, pedido.getId()));
+
+		if (SituacaoPedido.FECHADO.equals(pedidoExistente.getSituacao())) {
+			throw new OperacaoInvalidaException("Não é possível atualizar os valores de um Pedido fechado");
+		}
+
+		itemPedidoRepository.findByPedido(pedidoExistente)
+			.stream()
+			.forEach(ItemPedido::calcularValor);
 	}
 
 	@Override

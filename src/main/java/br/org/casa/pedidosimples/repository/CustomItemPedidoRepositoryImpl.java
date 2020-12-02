@@ -3,6 +3,7 @@
  */
 package br.org.casa.pedidosimples.repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -45,6 +46,15 @@ public class CustomItemPedidoRepositoryImpl extends QuerydslRepositorySupport
 
 
 		return new PageImpl<ItemPedido>(query.fetch(), pageable, query.fetchCount());
+	}
+
+	@Override
+	public List<ItemPedido> findByPedido(Pedido pedido) {
+		return from(itemPedido)
+				.where(itemPedido.pedido.eq(pedido))
+				.innerJoin(itemPedido.pedido).fetchJoin()
+				.innerJoin(itemPedido.itemVenda).fetchJoin()
+				.fetch();
 	}
 
 	@Override

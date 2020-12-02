@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import br.org.casa.pedidosimples.exception.EntidadeNaoEncontradaException;
 import br.org.casa.pedidosimples.model.Pedido;
 import br.org.casa.pedidosimples.repository.PedidoPredicateBuilder;
 import br.org.casa.pedidosimples.repository.PedidoRepository;
+import br.org.casa.pedidosimples.service.ItemPedidoService;
 import br.org.casa.pedidosimples.service.PedidoService;
 
 /**
@@ -32,6 +34,9 @@ import br.org.casa.pedidosimples.service.PedidoService;
 public class PedidoServiceImpl implements PedidoService {
 
 	private final PedidoRepository pedidoRepository;
+
+	@Autowired
+	private ItemPedidoService itemPedidoService;
 
 	PedidoServiceImpl(PedidoRepository pedidoRepository) {
 		this.pedidoRepository = pedidoRepository;
@@ -82,6 +87,8 @@ public class PedidoServiceImpl implements PedidoService {
 					return pedidoRepository.save(p);
 				})
 				.orElseThrow(() -> new EntidadeNaoEncontradaException(Pedido.NOME_EXIBICAO_ENTIDADE, uuid));
+
+		itemPedidoService.atualizarValores(pedido);
 
 		return pedido;
 	}

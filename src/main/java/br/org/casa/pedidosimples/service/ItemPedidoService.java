@@ -35,6 +35,14 @@ public interface ItemPedidoService {
 	Page<ItemPedido> buscarTodos(UUID uuidPedido, Pageable pageable, Map<String, String> parametrosBusca);
 
 	/**
+	 * Atualiza os valores de todos os {@link ItemPedido} associados ao Pedido informado.
+	 *
+	 * @param pedido o Pedido que terá os valores dos itens atualizados
+	 * @throws EntidadeNaoEncontradaException se não existir o Pedido informado.
+	 */
+	void atualizarValores(Pedido pedido);
+
+	/**
 	 * Busca um {@link ItemPedido} pelo seu uuid.
 	 *
 	 * @param uuid id do ItemPedido a ser buscado.
@@ -51,7 +59,8 @@ public interface ItemPedidoService {
 	 * @param itemVenda o ItemVenda a ser incluído no pedido
 	 * @return a versão persistida (com uuid preenchido) deste itemPedido
 	 * @throws EntidadeNaoEncontradaException se {@code uuidPedido} ou {@code itemVenda} não corresponderem
-	 * a nenhuma entidade existente
+	 * a nenhuma entidade exi@Override
+	stente
 	 */
 	ItemPedido incluir(UUID uuidPedido, ItemVenda itemVenda);
 
@@ -62,4 +71,5 @@ public interface ItemPedidoService {
 	 * @throws EntidadeNaoEncontradaException se não existir ItemPedido com o uuid informado
 	 */
 	void excluir(UUID uuid);
+
 }

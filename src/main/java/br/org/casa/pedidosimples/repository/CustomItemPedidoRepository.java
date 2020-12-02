@@ -3,6 +3,7 @@
  */
 package br.org.casa.pedidosimples.repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -30,5 +31,8 @@ public interface CustomItemPedidoRepository<S extends ItemPedido, ID> {
 
 	Page<S> findByPedido(Pedido pedido, BooleanExpression predicate, Pageable pageable);
 
+	List<S> findByPedido(Pedido pedido);
+
 	Optional<S> findById(ID id);
+
 }
