@@ -98,6 +98,12 @@ public class ItemPedidoServiceImpl implements ItemPedidoService {
 		ItemVenda itemVendaExistente = itemVendaService.buscarPorId(itemVenda.getId())
 				.orElseThrow(() -> new EntidadeNaoEncontradaException(ItemVenda.NOME_EXIBICAO_ENTIDADE, itemVenda.getId()));
 
+		if (!itemVenda.isAtivo()) {
+			throw new OperacaoInvalidaException(String.format("Não é possível adicionar um %s inativo ao %s.",
+					ItemVenda.NOME_EXIBICAO_ENTIDADE,
+					Pedido.NOME_EXIBICAO_ENTIDADE
+					));
+		}
 		ItemPedido itemPedido = new ItemPedido();
 		itemPedido.setPedido(pedido);
 		itemPedido.setItemVenda(itemVendaExistente);
