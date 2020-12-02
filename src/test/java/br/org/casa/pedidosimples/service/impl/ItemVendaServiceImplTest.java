@@ -20,8 +20,6 @@ import java.util.UUID;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -48,189 +46,180 @@ import br.org.casa.pedidosimples.service.ItemVendaService;
  *
  */
 @RunWith(SpringRunner.class)
-public class ItemVendaServiceImplTest {
+public class ItemVendaServiceImplTest implements ParameterAsAnswer {
 
 	@Autowired
-    private ItemVendaService service;
+	private ItemVendaService service;
 
-    @MockBean
-    private ItemVendaRepository itemVendaRepository;
+	@MockBean
+	private ItemVendaRepository itemVendaRepository;
 
-    @MockBean
-    private ItemPedidoService itemPedidoService;
+	@MockBean
+	private ItemPedidoService itemPedidoService;
 
-    @TestConfiguration
-    static class ItemVendaServiceImplTestContextConfiguration {
+	@TestConfiguration
+	static class ItemVendaServiceImplTestContextConfiguration {
 
-        @Bean
-        public ItemVendaService itemVendaService() {
-            return new ItemVendaServiceImpl();
-        }
-    }
+		@Bean
+		public ItemVendaService itemVendaService() {
+			return new ItemVendaServiceImpl();
+		}
+	}
 
-    @Test
-    public void testBuscarTodos() {
-    	Page<ItemVenda> page = new PageImpl<ItemVenda>(Collections.emptyList());
-    	Pageable pageable = mock(Pageable.class);
+	@Test
+	public void testBuscarTodos() {
+		Page<ItemVenda> page = new PageImpl<ItemVenda>(Collections.emptyList());
+		Pageable pageable = mock(Pageable.class);
 
-    	when(itemVendaRepository.findAll(any(Predicate.class), any(Pageable.class)))
-    		.thenReturn(page);
+		when(itemVendaRepository.findAll(any(Predicate.class), any(Pageable.class)))
+			.thenReturn(page);
 
-    	Page<ItemVenda> pageRetornado = service.buscarTodos(pageable, Collections.emptyMap());
+		Page<ItemVenda> pageRetornado = service.buscarTodos(pageable, Collections.emptyMap());
 
-    	assertThat(pageRetornado)
-    		.isEqualTo(page);
-    }
+		assertThat(pageRetornado)
+			.isEqualTo(page);
+	}
 
-    @Test
-    public void testBuscarPorId() {
-    	ItemVenda itemVenda = new ItemVenda();
+	@Test
+	public void testBuscarPorId() {
+		ItemVenda itemVenda = new ItemVenda();
 
-    	when(itemVendaRepository.findById(any()))
-    		.thenReturn(Optional.of(itemVenda));
+		when(itemVendaRepository.findById(any()))
+			.thenReturn(Optional.of(itemVenda));
 
-    	assertThat(service.buscarPorId(UUID.randomUUID()))
-    		.contains(itemVenda);
-    }
+		assertThat(service.buscarPorId(UUID.randomUUID()))
+			.contains(itemVenda);
+	}
 
-    @Test
-    public void testIncluir() {
-    	ItemVenda itemVendaAIncluir = new ItemVenda();
-    	ItemVenda itemVendaIncluido = new ItemVenda();
-    	itemVendaIncluido.setId(UUID.randomUUID());
+	@Test
+	public void testIncluir() {
+		ItemVenda itemVendaAIncluir = new ItemVenda();
+		ItemVenda itemVendaIncluido = new ItemVenda();
+		itemVendaIncluido.setId(UUID.randomUUID());
 
-    	when(itemVendaRepository.save(itemVendaAIncluir))
-    		.thenReturn(itemVendaIncluido);
+		when(itemVendaRepository.save(itemVendaAIncluir))
+			.thenReturn(itemVendaIncluido);
 
-    	assertThat(service.incluir(itemVendaAIncluir))
-    		.isEqualTo(itemVendaIncluido);
-    }
+		assertThat(service.incluir(itemVendaAIncluir))
+			.isEqualTo(itemVendaIncluido);
+	}
 
-    @Test
-    public void testAlterarComEntidadeNaoEncontrada() {
-    	when(itemVendaRepository.findById(any()))
-    		.thenReturn(Optional.empty());
+	@Test
+	public void testAlterarComEntidadeNaoEncontrada() {
+		when(itemVendaRepository.findById(any()))
+			.thenReturn(Optional.empty());
 
-    	assertThatExceptionOfType(EntidadeNaoEncontradaException.class)
-    		.isThrownBy(() -> service.alterar(UUID.randomUUID(), new ItemVenda()));
-    }
+		assertThatExceptionOfType(EntidadeNaoEncontradaException.class)
+			.isThrownBy(() -> service.alterar(UUID.randomUUID(), new ItemVenda()));
+	}
 
-    @Test
-    public void testAlterarAlterandoTipo() {
-    	ItemVenda aAlterar = new ItemVenda();
-    	aAlterar.setId(UUID.randomUUID());
-    	aAlterar.setTipo(TipoItemVenda.PRODUTO);
-    	ItemVenda existente = new ItemVenda();
-    	existente.setTipo(TipoItemVenda.SERVICO);
+	@Test
+	public void testAlterarAlterandoTipo() {
+		ItemVenda aAlterar = new ItemVenda();
+		aAlterar.setId(UUID.randomUUID());
+		aAlterar.setTipo(TipoItemVenda.PRODUTO);
+		ItemVenda existente = new ItemVenda();
+		existente.setTipo(TipoItemVenda.SERVICO);
 
-    	when(itemVendaRepository.findById(any()))
-    		.thenReturn(Optional.of(existente));
+		when(itemVendaRepository.findById(any()))
+			.thenReturn(Optional.of(existente));
 
-    	assertThatExceptionOfType(OperacaoInvalidaException.class)
-    		.isThrownBy(() -> service.alterar(aAlterar.getId(), aAlterar))
-    		.withMessageContaining("Não é possível alterar o tipo");
-    }
+		assertThatExceptionOfType(OperacaoInvalidaException.class)
+			.isThrownBy(() -> service.alterar(aAlterar.getId(), aAlterar))
+			.withMessageContaining("Não é possível alterar o tipo");
+	}
 
-    @Test
-    public void testAlterarDesativandoComItensPedidoAbertos() {
-    	ItemVenda aAlterar = new ItemVenda();
-    	aAlterar.setId(UUID.randomUUID());
-    	aAlterar.setTipo(TipoItemVenda.PRODUTO);
-    	aAlterar.setAtivo(false);
+	@Test
+	public void testAlterarDesativandoComItensPedidoAbertos() {
+		ItemVenda aAlterar = new ItemVenda();
+		aAlterar.setId(UUID.randomUUID());
+		aAlterar.setTipo(TipoItemVenda.PRODUTO);
+		aAlterar.setAtivo(false);
 
-    	ItemVenda existente = new ItemVenda();
-    	existente.setTipo(TipoItemVenda.PRODUTO);
-    	existente.setAtivo(true);
+		ItemVenda existente = new ItemVenda();
+		existente.setTipo(TipoItemVenda.PRODUTO);
+		existente.setAtivo(true);
 
-    	when(itemVendaRepository.findById(any()))
-    		.thenReturn(Optional.of(existente));
-    	when(itemPedidoService.contarPorItemVendaEPedidoAtivo(any()))
-    		.thenReturn(1345L);
+		when(itemVendaRepository.findById(any()))
+			.thenReturn(Optional.of(existente));
+		when(itemPedidoService.contarPorItemVendaEPedidoAtivo(any()))
+			.thenReturn(1345L);
 
-    	assertThatExceptionOfType(OperacaoInvalidaException.class)
-    		.isThrownBy(() -> service.alterar(aAlterar.getId(), aAlterar))
-    		.withMessageContaining("Não é possível desativar")
-    		.withMessageContaining("1345");
-    }
+		assertThatExceptionOfType(OperacaoInvalidaException.class)
+			.isThrownBy(() -> service.alterar(aAlterar.getId(), aAlterar))
+			.withMessageContaining("Não é possível desativar")
+			.withMessageContaining("1345");
+	}
 
-    @Test
-    public void testAlterarMudandoValor() {
-    	ItemVenda aAlterar = new ItemVenda();
-    	aAlterar.setId(UUID.randomUUID());
-    	aAlterar.setTipo(TipoItemVenda.PRODUTO);
-    	aAlterar.setAtivo(true);
-    	aAlterar.setValorBase(new BigDecimal("2.00"));
+	@Test
+	public void testAlterarMudandoValor() {
+		ItemVenda aAlterar = new ItemVenda();
+		aAlterar.setId(UUID.randomUUID());
+		aAlterar.setTipo(TipoItemVenda.PRODUTO);
+		aAlterar.setAtivo(true);
+		aAlterar.setValorBase(new BigDecimal("2.00"));
 
-    	ItemVenda existente = new ItemVenda();
-    	existente.setTipo(TipoItemVenda.PRODUTO);
-    	existente.setAtivo(true);
-    	existente.setValorBase(new BigDecimal("1.00"));
+		ItemVenda existente = new ItemVenda();
+		existente.setTipo(TipoItemVenda.PRODUTO);
+		existente.setAtivo(true);
+		existente.setValorBase(new BigDecimal("1.00"));
 
-    	when(itemVendaRepository.findById(any()))
-    		.thenReturn(Optional.of(existente));
-    	when(itemVendaRepository.save(any()))
-    		.thenAnswer(gerarAnswerDevolveParametro());
-    	doNothing().when(itemPedidoService).atualizarValores(existente);
+		when(itemVendaRepository.findById(any()))
+			.thenReturn(Optional.of(existente));
+		when(itemVendaRepository.save(any()))
+			.thenAnswer(this.<ItemVenda>getParameterAsAnswer());
+		doNothing().when(itemPedidoService).atualizarValores(existente);
 
-    	ItemVenda retornado = service.alterar(aAlterar.getId(), aAlterar);
+		ItemVenda retornado = service.alterar(aAlterar.getId(), aAlterar);
 
-    	assertThat(retornado.getValorBase())
-    		.isEqualTo(aAlterar.getValorBase());
-    }
+		assertThat(retornado.getValorBase())
+			.isEqualTo(aAlterar.getValorBase());
+	}
 
-    @Test
-    public void testExcluirNaoEncontrado() {
-    	when(itemVendaRepository.findById(any()))
+	@Test
+	public void testExcluirNaoEncontrado() {
+		when(itemVendaRepository.findById(any()))
 			.thenReturn(Optional.empty());
 
 		assertThatExceptionOfType(EntidadeNaoEncontradaException.class)
 			.isThrownBy(() -> service.excluir(UUID.randomUUID()));
-    }
+	}
 
-    @Test
-    public void testExcluirOperacaoInvalida() {
-    	ItemVenda existente = new ItemVenda();
-    	existente.setId(UUID.randomUUID());
-    	existente.setTipo(TipoItemVenda.PRODUTO);
-    	existente.setAtivo(true);
-    	existente.setValorBase(new BigDecimal("1.00"));
+	@Test
+	public void testExcluirOperacaoInvalida() {
+		ItemVenda existente = new ItemVenda();
+		existente.setId(UUID.randomUUID());
+		existente.setTipo(TipoItemVenda.PRODUTO);
+		existente.setAtivo(true);
+		existente.setValorBase(new BigDecimal("1.00"));
 
-    	when(itemVendaRepository.findById(any()))
-    		.thenReturn(Optional.of(existente));
-    	when(itemPedidoService.contarPorItemVenda(any()))
-    		.thenReturn(2L);
+		when(itemVendaRepository.findById(any()))
+			.thenReturn(Optional.of(existente));
+		when(itemPedidoService.contarPorItemVenda(any()))
+			.thenReturn(2L);
 
 		assertThatExceptionOfType(OperacaoInvalidaException.class)
 			.isThrownBy(() -> service.excluir(existente.getId()))
 			.withMessageContaining("Total de 2 associações");
-    }
+	}
 
-    @Test
-    public void testExcluirComSucesso() {
-    	ItemVenda existente = new ItemVenda();
-    	existente.setId(UUID.randomUUID());
-    	existente.setTipo(TipoItemVenda.PRODUTO);
-    	existente.setAtivo(true);
-    	existente.setValorBase(new BigDecimal("1.00"));
+	@Test
+	public void testExcluirComSucesso() {
+		ItemVenda existente = new ItemVenda();
+		existente.setId(UUID.randomUUID());
+		existente.setTipo(TipoItemVenda.PRODUTO);
+		existente.setAtivo(true);
+		existente.setValorBase(new BigDecimal("1.00"));
 
-    	when(itemVendaRepository.findById(any()))
-    		.thenReturn(Optional.of(existente));
-    	when(itemPedidoService.contarPorItemVenda(any()))
-    		.thenReturn(0L);
-    	doNothing().when(itemVendaRepository).delete(any());
+		when(itemVendaRepository.findById(any()))
+			.thenReturn(Optional.of(existente));
+		when(itemPedidoService.contarPorItemVenda(any()))
+			.thenReturn(0L);
+		doNothing().when(itemVendaRepository).delete(any());
 
-    	assertThatCode( () -> service.excluir(existente.getId()))
-    		.doesNotThrowAnyException();
-    	verify(itemVendaRepository).delete(existente);
+		assertThatCode( () -> service.excluir(existente.getId()))
+			.doesNotThrowAnyException();
+		verify(itemVendaRepository).delete(existente);
 
-    }
-
-    private static <T> Answer<T> gerarAnswerDevolveParametro() {
-    	return new Answer<T>() {
-    		@SuppressWarnings("unchecked")
-			public T answer(InvocationOnMock invocation) throws Throwable {
-		         return (T) invocation.getArguments()[0];
-		     }
-    	};
-    }
+	}
 }
