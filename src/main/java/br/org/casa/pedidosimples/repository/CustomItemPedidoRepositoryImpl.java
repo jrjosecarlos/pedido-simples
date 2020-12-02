@@ -25,7 +25,7 @@ import br.org.casa.pedidosimples.model.QItemPedido;
  *
  */
 public class CustomItemPedidoRepositoryImpl extends QuerydslRepositorySupport
-	implements CustomItemPedidoRepository {
+	implements CustomItemPedidoRepository<ItemPedido, UUID> {
 
 	private static QItemPedido itemPedido = QItemPedido.itemPedido;
 

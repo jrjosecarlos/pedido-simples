@@ -18,12 +18,17 @@ import br.org.casa.pedidosimples.model.Pedido;
  * Interface para as queries customizadas que envolvem {@link ItemPedido}. A principal diferença envolve
  * a necessidade de fetch joins envolvendo {@link Pedido} e {@link ItemPedido}.
  *
+ * @param <S> tipo de marcação. É esperado que seja sempre {@link ItemPedido}
+ * @param <ID> tipo de marcação. É esperado que seja sempre {@link UUID}.
  * @author jrjosecarlos
+ * @implNote Apesar de este repositório ser específico para ItemPedido, é necessário definir os tipos genéricos
+ * para que a sobreposição de métodos prevista pelo Spring Data funcione corretamente, de modo a evitar o erro
+ * "ambiguous reference" ao compilar o projeto com Maven. Veja https://stackoverflow.com/a/29006761.
  *
  */
-public interface CustomItemPedidoRepository {
+public interface CustomItemPedidoRepository<S extends ItemPedido, ID> {
 
-	Page<ItemPedido> findByPedido(Pedido pedido, BooleanExpression predicate, Pageable pageable);
+	Page<S> findByPedido(Pedido pedido, BooleanExpression predicate, Pageable pageable);
 
-	Optional<ItemPedido> findById(UUID id);
+	Optional<S> findById(ID id);
 }
