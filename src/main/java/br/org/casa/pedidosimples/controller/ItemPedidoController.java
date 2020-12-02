@@ -22,6 +22,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.org.casa.pedidosimples.exception.EntidadeNaoEncontradaException;
 import br.org.casa.pedidosimples.model.ItemPedido;
+import br.org.casa.pedidosimples.model.ItemVenda;
 import br.org.casa.pedidosimples.service.ItemPedidoService;
 
 /**
@@ -52,8 +53,9 @@ public class ItemPedidoController {
 	}
 
 	@PostMapping("/pedido/{uuidPedido}/item-pedido")
-	ResponseEntity<ItemPedido> incluirItemPedido(@PathVariable("uuidPedido") UUID uuidPedido, @RequestBody @Valid ItemPedido itemPedido) {
-		ItemPedido criado = service.incluir(uuidPedido, itemPedido);
+	ResponseEntity<ItemPedido> incluirItemPedido(@PathVariable("uuidPedido") UUID uuidPedido,
+			@RequestBody @Valid ItemVenda itemVenda) {
+		ItemPedido criado = service.incluir(uuidPedido, itemVenda);
 
 		return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequest()
 					.path("/item-pedido/{uuid}")

@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 
 import br.org.casa.pedidosimples.exception.EntidadeNaoEncontradaException;
 import br.org.casa.pedidosimples.model.ItemPedido;
+import br.org.casa.pedidosimples.model.ItemVenda;
 import br.org.casa.pedidosimples.model.Pedido;
 
 /**
@@ -29,6 +30,7 @@ public interface ItemPedidoService {
 	 * @param pageable interface de definição da paginação da busca
 	 * @param parametrosBusca parâmetros para filtragem dos resultados encontrados
 	 * @return um {@link Page} contendo os registros da página atual, de acordo com os parâmetros de busca
+	 * @throws EntidadeNaoEncontradaException se {@code uuidPedido} não corresponder a nenhum Pedido existente
 	 */
 	Page<ItemPedido> buscarTodos(UUID uuidPedido, Pageable pageable, Map<String, String> parametrosBusca);
 
@@ -42,13 +44,16 @@ public interface ItemPedidoService {
 	Optional<ItemPedido> buscarPorId(UUID uuid);
 
 	/**
-	 * Inclui um novo ItemPedido.
-	 * @param uuidPedido
+	 * Inclui um novo ItemPedido para o {@link Pedido} com uuid informado, relacionado ao
+	 * {@link ItemVenda}.
 	 *
-	 * @param itemPedido ItemPedido a ser incluído.
+	 * @param uuidPedido o Pedido que terá um itemPedido incluído
+	 * @param itemVenda o ItemVenda a ser incluído no pedido
 	 * @return a versão persistida (com uuid preenchido) deste itemPedido
+	 * @throws EntidadeNaoEncontradaException se {@code uuidPedido} ou {@code itemVenda} não corresponderem
+	 * a nenhuma entidade existente
 	 */
-	ItemPedido incluir(UUID uuidPedido, ItemPedido itemPedido);
+	ItemPedido incluir(UUID uuidPedido, ItemVenda itemVenda);
 
 	/**
 	 * Exclui um ItemPedido existente.

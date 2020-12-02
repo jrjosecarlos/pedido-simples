@@ -16,10 +16,12 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 
 import br.org.casa.pedidosimples.exception.EntidadeNaoEncontradaException;
 import br.org.casa.pedidosimples.model.ItemPedido;
+import br.org.casa.pedidosimples.model.ItemVenda;
 import br.org.casa.pedidosimples.model.Pedido;
 import br.org.casa.pedidosimples.repository.ItemPedidoPredicateBuilder;
 import br.org.casa.pedidosimples.repository.ItemPedidoRepository;
 import br.org.casa.pedidosimples.service.ItemPedidoService;
+import br.org.casa.pedidosimples.service.ItemVendaService;
 import br.org.casa.pedidosimples.service.PedidoService;
 
 /**
@@ -36,9 +38,13 @@ public class ItemPedidoServiceImpl implements ItemPedidoService {
 
 	private final PedidoService pedidoService;
 
-	ItemPedidoServiceImpl(ItemPedidoRepository itemPedidoRepository, PedidoService pedidoService) {
+	private final ItemVendaService itemVendaService;
+
+	ItemPedidoServiceImpl(ItemPedidoRepository itemPedidoRepository, PedidoService pedidoService,
+			ItemVendaService itemVendaService) {
 		this.itemPedidoRepository = itemPedidoRepository;
 		this.pedidoService = pedidoService;
+		this.itemVendaService = itemVendaService;
 	}
 
 	@Override
@@ -58,9 +64,18 @@ public class ItemPedidoServiceImpl implements ItemPedidoService {
 
 	@Override
 	@Transactional
-	public ItemPedido incluir(UUID uuidPedido, ItemPedido itemPedido) {
-		// TODO Auto-generated method stub
-		return null;
+	public ItemPedido incluir(UUID uuidPedido, ItemVenda itemVenda) {
+		Pedido pedido = pedidoService.buscarPorId(uuidPedido)
+				.orElseThrow(() -> new EntidadeNaoEncontradaException(Pedido.NOME_EXIBICAO_ENTIDADE, uuidPedido));
+		ItemVenda itemVendaExistente = itemVendaService.buscarPorId(itemVenda.getId())
+				.orElseThrow(() -> new EntidadeNaoEncontradaException(ItemVenda.NOME_EXIBICAO_ENTIDADE, itemVenda.getId()));
+
+		ItemPedido itemPedido = new ItemPedido();
+		itemPedido.setPedido(pedido);
+		itemPedido.setItemVenda(itemVendaExistente);
+		itemPedido.calcularValor();
+
+		return itemPedidoRepository.save(itemPedido);
 	}
 
 	@Override
