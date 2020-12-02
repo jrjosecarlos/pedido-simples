@@ -54,17 +54,20 @@ public interface PedidoService {
 	Pedido incluir(Pedido pedido);
 
 	/**
-	 * Altera um Pedido existente.
+	 * Altera um Pedido existente. Só é permitido alterar o código; para alterar o fator de desconto
+	 * ou a situação é preciso usar métodos específicos ({@link #aplicarDesconto(UUID, BigDecimal)} e
+	 * {@link #fechar(UUID)}, respectivamente).
 	 *
 	 * @param uuid o id do Pedido a ser alterado
 	 * @param pedido os novos dados para o Pedido
 	 * @return a versão persistida deste pedido
 	 * @throws EntidadeNaoEncontradaException se não existir Pedido com o uuid informado
+	 * @throws OperacaoInvalidaException caso haja tentativa de alterar o fator de desconto ou a situação
 	 */
 	Pedido alterar(UUID uuid, Pedido pedido);
 
 	/**
-	 * Exclui um Pedido existente.
+	 * Exclui um Pedido existente, juntamente com seus {@link ItemPedido}.
 	 *
 	 * @param uuid id do Pedido a ser excluído
 	 * @throws EntidadeNaoEncontradaException se não existir Pedido com o uuid informado
@@ -78,6 +81,8 @@ public interface PedidoService {
 	 * @param uuid o uuid do Pedido a se aplicar o fator de desconto
 	 * @param fatorDesconto o novo fator de desconto
 	 * @return o Pedido, com o novo valor de fator de desconto aplicado
+	 * @throws EntidadeNaoEncontradaException se não existir Pedido com o uuid informado
+	 * @throws OperacaoInvalidaException se o Pedido estiver fechado
 	 */
 	Pedido aplicarDesconto(UUID uuid, BigDecimal fatorDesconto);
 
