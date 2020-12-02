@@ -49,7 +49,7 @@ public class CustomItemPedidoRepositoryImpl extends QuerydslRepositorySupport
 
 	@Override
 	public Optional<ItemPedido> findById(UUID id) {
-		return Optional.of(from(itemPedido)
+		return Optional.ofNullable(from(itemPedido)
 			.where(itemPedido.id.eq(id))
 			.innerJoin(itemPedido.pedido).fetchJoin()
 			.innerJoin(itemPedido.itemVenda).fetchJoin()
