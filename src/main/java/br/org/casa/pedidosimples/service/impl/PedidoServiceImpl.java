@@ -66,11 +66,22 @@ public class PedidoServiceImpl implements PedidoService {
 	@Override
 	@Transactional
 	public Pedido alterar(UUID uuid, Pedido pedido) {
-		return pedidoRepository.findById(uuid)
-				.map(p -> {
-					p.setCodigo(pedido.getCodigo());
-					return pedidoRepository.save(p);
-				}).orElseThrow(() -> new EntidadeNaoEncontradaException(Pedido.NOME_EXIBICAO_ENTIDADE, uuid));
+		Pedido existente = pedidoRepository.findById(uuid)
+				.orElseThrow(() -> new EntidadeNaoEncontradaException(Pedido.NOME_EXIBICAO_ENTIDADE, uuid));
+
+		if (!pedido.getFatorDesconto().equals(existente.getFatorDesconto())) {
+			throw new OperacaoInvalidaException(String.format("Não é possível alterar diretamente o fator de desconto do %s. "
+					+ "Utilize o método /aplicar-desconto.", Pedido.NOME_EXIBICAO_ENTIDADE));
+		}
+
+		if (!pedido.getSituacao().equals(existente.getSituacao())) {
+			throw new OperacaoInvalidaException(String.format("Não é possível alterar diretamente o fator de desconto do %s. "
+					+ "Utilize o método /fechar.", Pedido.NOME_EXIBICAO_ENTIDADE));
+		}
+
+		existente.setCodigo(pedido.getCodigo());
+
+		return pedidoRepository.save(existente);
 	}
 
 	@Override
