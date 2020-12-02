@@ -3,6 +3,7 @@
  */
 package br.org.casa.pedidosimples.service;
 
+import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import br.org.casa.pedidosimples.exception.EntidadeNaoEncontradaException;
+import br.org.casa.pedidosimples.model.ItemPedido;
 import br.org.casa.pedidosimples.model.Pedido;
 
 /**
@@ -65,5 +67,15 @@ public interface PedidoService {
 	 * @throws EntidadeNaoEncontradaException se não existir Pedido com o uuid informado
 	 */
 	void excluir(UUID uuid);
+
+	/**
+	 * Aplica um fator de desconto num dado {@link Pedido}, atualizando os valores dos
+	 * seus {@link ItemPedido}s.
+	 *
+	 * @param uuid o uuid do Pedido a se aplicar o fator de desconto
+	 * @param fatorDesconto o novo fator de desconto
+	 * @return o Pedido, com o novo valor de fator de desconto aplicado
+	 */
+	Pedido aplicarDesconto(UUID uuid, BigDecimal fatorDesconto);
 
 }

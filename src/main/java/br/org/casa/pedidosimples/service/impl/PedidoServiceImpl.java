@@ -3,6 +3,7 @@
  */
 package br.org.casa.pedidosimples.service.impl;
 
+import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -70,6 +71,19 @@ public class PedidoServiceImpl implements PedidoService {
 	public void excluir(UUID uuid) {
 		pedidoRepository.delete(pedidoRepository.findById(uuid)
 				.orElseThrow(() -> new EntidadeNaoEncontradaException(Pedido.NOME_EXIBICAO_ENTIDADE, uuid)));
+	}
+
+	@Override
+	@Transactional
+	public Pedido aplicarDesconto(UUID uuid, BigDecimal fatorDesconto) {
+		Pedido pedido = pedidoRepository.findById(uuid)
+				.map(p -> {
+					p.setFatorDesconto(fatorDesconto);
+					return pedidoRepository.save(p);
+				})
+				.orElseThrow(() -> new EntidadeNaoEncontradaException(Pedido.NOME_EXIBICAO_ENTIDADE, uuid));
+
+		return pedido;
 	}
 
 }

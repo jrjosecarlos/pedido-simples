@@ -70,6 +70,11 @@ public class PedidoController {
 		return ResponseEntity.ok(service.alterar(uuid, pedido));
 	}
 
+	@PutMapping("/pedido/{uuid}/aplicar-desconto")
+	ResponseEntity<Pedido> aplicarDesconto(@RequestBody @Valid FatorDescontoDTO fatorDesconto, @PathVariable("uuid") UUID uuid) {
+		return ResponseEntity.ok(service.aplicarDesconto(uuid, fatorDesconto.getValor()));
+	}
+
 	@DeleteMapping("/pedido/{uuid}")
 	ResponseEntity<?> excluirPedido(@PathVariable("uuid") UUID uuid) {
 		service.excluir(uuid);
