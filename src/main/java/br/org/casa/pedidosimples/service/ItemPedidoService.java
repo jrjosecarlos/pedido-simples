@@ -42,7 +42,7 @@ public interface ItemPedidoService {
 	 * @param pedido o Pedido que terá os valores dos itens atualizados
 	 * @throws EntidadeNaoEncontradaException se não existir o Pedido informado.
 	 * @throws OperacaoInvalidaException se o Pedido estiver com situação
-	 * {@link SituacaoPedido#FECHADO}
+	 * {@link SituacaoPedido#FECHADO} ou se estiver vinculado a um {@link ItemVenda} desativado
 	 */
 	void atualizarValores(Pedido pedido);
 
@@ -52,6 +52,7 @@ public interface ItemPedidoService {
 	 *
 	 * @param itemVenda o itemVenda que se deseja buscar
 	 * @throws EntidadeNaoEncontradaException se o itemVenda informado não existir.
+	 * @throws OperacaoInvalidaException se o itemVenda não estiver ativo
 	 */
 	void atualizarValores(ItemVenda itemVenda);
 
@@ -66,14 +67,16 @@ public interface ItemPedidoService {
 
 	/**
 	 * Inclui um novo ItemPedido para o {@link Pedido} com uuid informado, relacionado ao
-	 * {@link ItemVenda}.
+	 * {@link ItemVenda}. Seu valor é calculado em função do valor do itemVenda, do fator de
+	 * desconto relacionado ao tipo do itemVenda e do fator de desconto do Pedido.
 	 *
 	 * @param uuidPedido o Pedido que terá um itemPedido incluído
 	 * @param itemVenda o ItemVenda a ser incluído no pedido
 	 * @return a versão persistida (com uuid preenchido) deste itemPedido
 	 * @throws EntidadeNaoEncontradaException se {@code uuidPedido} ou {@code itemVenda} não corresponderem
-	 * a nenhuma entidade exi@Override
-	stente
+	 * a nenhuma entidade existente
+	 * @throws OperacaoInvalidaException se o pedido em questão estiver fechado ou se o itemVenda em
+	 * questão estiver inativo
 	 */
 	ItemPedido incluir(UUID uuidPedido, ItemVenda itemVenda);
 
