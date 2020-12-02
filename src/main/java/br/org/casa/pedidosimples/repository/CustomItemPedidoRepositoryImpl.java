@@ -69,7 +69,7 @@ public class CustomItemPedidoRepositoryImpl extends QuerydslRepositorySupport
 	}
 
 	@Override
-	public long contarPorItemVendaEPedidoAtivo(ItemVenda itemVenda) {
+	public long contarPorItemVendaEPedidoAberto(ItemVenda itemVenda) {
 		return from(itemPedido)
 				.where(itemPedido.itemVenda.eq(itemVenda)
 						.and(itemPedido.pedido.situacao.eq(SituacaoPedido.ABERTO)))
@@ -77,7 +77,7 @@ public class CustomItemPedidoRepositoryImpl extends QuerydslRepositorySupport
 	}
 
 	@Override
-	public List<ItemPedido> buscarPorItemVendaEPedidoAtivo(ItemVenda itemVenda) {
+	public List<ItemPedido> buscarPorItemVendaEPedidoAberto(ItemVenda itemVenda) {
 		return from(itemPedido)
 				.where(itemPedido.itemVenda.eq(itemVenda)
 						.and(itemPedido.pedido.situacao.eq(SituacaoPedido.ABERTO)))

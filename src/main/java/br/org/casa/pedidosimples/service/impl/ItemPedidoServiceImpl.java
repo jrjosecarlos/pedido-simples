@@ -80,7 +80,7 @@ public class ItemPedidoServiceImpl implements ItemPedidoService {
 		ItemVenda itemVendaExistente = itemVendaService.buscarPorId(itemVenda.getId())
 				.orElseThrow(() -> new EntidadeNaoEncontradaException(ItemVenda.NOME_EXIBICAO_ENTIDADE, itemVenda.getId()));
 
-		itemPedidoRepository.buscarPorItemVendaEPedidoAtivo(itemVendaExistente)
+		itemPedidoRepository.buscarPorItemVendaEPedidoAberto(itemVendaExistente)
 			.stream()
 			.forEach(ItemPedido::calcularValor);
 	}
@@ -129,7 +129,7 @@ public class ItemPedidoServiceImpl implements ItemPedidoService {
 
 	@Override
 	public long contarPorItemVendaEPedidoAtivo(ItemVenda itemVenda) {
-		return itemPedidoRepository.contarPorItemVendaEPedidoAtivo(itemVenda);
+		return itemPedidoRepository.contarPorItemVendaEPedidoAberto(itemVenda);
 	}
 
 	@Override
