@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.org.casa.pedidosimples.exception.EntidadeNaoEncontradaException;
+import br.org.casa.pedidosimples.exception.RequisicaoInvalidaException;
 import br.org.casa.pedidosimples.model.ItemVenda;
 import br.org.casa.pedidosimples.model.Pedido;
 import br.org.casa.pedidosimples.service.PedidoService;
@@ -67,6 +68,9 @@ public class PedidoController {
 
 	@PutMapping("/pedido/{uuid}")
 	ResponseEntity<Pedido> alterarPedido(@RequestBody @Valid Pedido pedido, @PathVariable("uuid") UUID uuid) {
+		if (!uuid.equals(pedido.getId())) {
+			throw new RequisicaoInvalidaException("O uuid do %s na url é diferente do no payload", Pedido.NOME_EXIBICAO_ENTIDADE);
+		}
 		return ResponseEntity.ok(service.alterar(uuid, pedido));
 	}
 

@@ -17,6 +17,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import br.org.casa.pedidosimples.exception.EntidadeNaoEncontradaException;
 import br.org.casa.pedidosimples.exception.OperacaoInvalidaException;
 import br.org.casa.pedidosimples.exception.ParametroBuscaParseException;
+import br.org.casa.pedidosimples.exception.RequisicaoInvalidaException;
 import br.org.casa.pedidosimples.model.ErroHttpSimples;
 
 /**
@@ -69,6 +70,16 @@ public class RestControllerResponseEntityExceptionHandler extends ResponseEntity
 			WebRequest request) {
 		HttpStatus status = HttpStatus.BAD_REQUEST;
 		ErroHttpSimples erro = new ErroHttpSimples(status, "Operação inválida", ex.getMessage());
+
+		return super.handleExceptionInternal(ex, erro, new HttpHeaders(), status, request);
+
+	}
+
+	@ExceptionHandler(value = {RequisicaoInvalidaException.class})
+	protected ResponseEntity<Object> handleRequisicaoInvalida(RequisicaoInvalidaException ex,
+			WebRequest request) {
+		HttpStatus status = HttpStatus.BAD_REQUEST;
+		ErroHttpSimples erro = new ErroHttpSimples(status, "Requisição inválida", ex.getMessage());
 
 		return super.handleExceptionInternal(ex, erro, new HttpHeaders(), status, request);
 
