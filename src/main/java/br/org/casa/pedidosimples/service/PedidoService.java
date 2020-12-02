@@ -12,8 +12,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import br.org.casa.pedidosimples.exception.EntidadeNaoEncontradaException;
+import br.org.casa.pedidosimples.exception.OperacaoInvalidaException;
 import br.org.casa.pedidosimples.model.ItemPedido;
+import br.org.casa.pedidosimples.model.ItemVenda;
 import br.org.casa.pedidosimples.model.Pedido;
+import br.org.casa.pedidosimples.model.enumeration.SituacaoPedido;
 
 /**
  * Contrato para serviços relacionados a {@link Pedido}.
@@ -77,5 +80,18 @@ public interface PedidoService {
 	 * @return o Pedido, com o novo valor de fator de desconto aplicado
 	 */
 	Pedido aplicarDesconto(UUID uuid, BigDecimal fatorDesconto);
+
+	/**
+	 * Atualiza a Situação de um pedido para {@link SituacaoPedido#FECHADO}, impedido que novos
+	 * {@link ItemVenda} sejam adicionados a ele e também que seus valores sejam alterados.
+	 * Os valores são recalculados uma última vez antes do fechamento, e também é verificado
+	 * se algum dos ItemVenda atualmente associados ao pedido estão inativos.
+	 *
+	 * @param uuid o id do Pedido a ser fechado
+	 * @return uma representação do estado atual do Pedido
+	 * @throws EntidadeNaoEncontradaException se o uuid informado não corresponder a nenhum pedido
+	 * @throws OperacaoInvalidaException se o Pedido não puder ser fechado por algum motivo
+	 */
+	Pedido fechar(UUID uuid);
 
 }

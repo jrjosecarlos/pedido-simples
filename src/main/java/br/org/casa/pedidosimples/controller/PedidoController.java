@@ -75,6 +75,11 @@ public class PedidoController {
 		return ResponseEntity.ok(service.aplicarDesconto(uuid, fatorDesconto.getValor()));
 	}
 
+	@PostMapping("/pedido/{uuid}/fechar")
+	ResponseEntity<Pedido> fecharPedido(@PathVariable("uuid") UUID uuid) {
+		return ResponseEntity.ok(service.fechar(uuid));
+	}
+
 	@DeleteMapping("/pedido/{uuid}")
 	ResponseEntity<?> excluirPedido(@PathVariable("uuid") UUID uuid) {
 		service.excluir(uuid);

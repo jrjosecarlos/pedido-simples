@@ -49,7 +49,7 @@ public class ItemPedidoController {
 	@GetMapping("/item-pedido/{uuid}")
 	ResponseEntity<ItemPedido> buscarItemPedidoPorId(@PathVariable("uuid") UUID uuid) {
 		return ResponseEntity.ok(service.buscarPorId(uuid)
-					.orElseThrow(() -> new EntidadeNaoEncontradaException(ItemPedido.NOME_EXIBICAO_ENTITDADE, uuid))
+					.orElseThrow(() -> new EntidadeNaoEncontradaException(ItemPedido.NOME_EXIBICAO_ENTIDADE, uuid))
 				);
 	}
 

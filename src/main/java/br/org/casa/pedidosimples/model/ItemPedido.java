@@ -41,7 +41,7 @@ public class ItemPedido extends BaseEntity {
 	 * Nome de exibicao para esta entidade. Usado principalmente no retorno
 	 * de mensagens de erro.
 	 */
-	public static final String NOME_EXIBICAO_ENTITDADE = "Item de Pedido";
+	public static final String NOME_EXIBICAO_ENTIDADE = "Item de Pedido";
 
 	@Column(name = "valor")
 	@NotNull
@@ -150,7 +150,7 @@ public class ItemPedido extends BaseEntity {
 				try {
 					return QItemPedido.itemPedido.valor.goe(new BigDecimal(valor));
 				} catch (NumberFormatException e) {
-					throw new ParametroBuscaParseException(e, NOME_EXIBICAO_ENTITDADE, this.getNomeParametro(), valor, "0.00");
+					throw new ParametroBuscaParseException(e, NOME_EXIBICAO_ENTIDADE, this.getNomeParametro(), valor, "0.00");
 				}
 			}
 		},
@@ -164,7 +164,7 @@ public class ItemPedido extends BaseEntity {
 				try {
 					return QItemPedido.itemPedido.valor.loe(new BigDecimal(valor));
 				} catch (NumberFormatException e) {
-					throw new ParametroBuscaParseException(e, NOME_EXIBICAO_ENTITDADE, this.getNomeParametro(), valor, "0.00");
+					throw new ParametroBuscaParseException(e, NOME_EXIBICAO_ENTIDADE, this.getNomeParametro(), valor, "0.00");
 				}
 			}
 		},

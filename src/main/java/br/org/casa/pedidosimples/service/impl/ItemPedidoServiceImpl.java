@@ -124,7 +124,7 @@ public class ItemPedidoServiceImpl implements ItemPedidoService {
 	@Transactional
 	public void excluir(UUID uuid) {
 		itemPedidoRepository.delete(itemPedidoRepository.findById(uuid)
-				.orElseThrow(() -> new EntidadeNaoEncontradaException(ItemPedido.NOME_EXIBICAO_ENTITDADE, uuid)));
+				.orElseThrow(() -> new EntidadeNaoEncontradaException(ItemPedido.NOME_EXIBICAO_ENTIDADE, uuid)));
 	}
 
 	@Override
@@ -140,6 +140,11 @@ public class ItemPedidoServiceImpl implements ItemPedidoService {
 	@Override
 	public long excluirPorPedido(Pedido pedido) {
 		return itemPedidoRepository.deleteByPedido(pedido);
+	}
+
+	@Override
+	public long contarPorPedidoEItemVendaInativo(Pedido pedido) {
+		return itemPedidoRepository.contarPorPedidoEItemVendaInativo(pedido);
 	}
 
 }

@@ -112,4 +112,13 @@ public interface ItemPedidoService {
 	 */
 	long excluirPorPedido(Pedido pedido);
 
+	/**
+	 * Retorna o número de {@link ItemPedido} associados ao {@link Pedido} informado e que
+	 * também estejam associados a {@link ItemVenda} que estejam inativos
+	 *
+	 * @param pedido o pedido que se deseja buscar
+	 * @return a quantidade de ItemPedido associada a ItemVenda inativo. Pode ser zero.
+	 */
+	long contarPorPedidoEItemVendaInativo(Pedido pedido);
+
 }

@@ -93,4 +93,12 @@ public class CustomItemPedidoRepositoryImpl extends QuerydslRepositorySupport
 				.execute();
 	}
 
+	@Override
+	public long contarPorPedidoEItemVendaInativo(Pedido pedido) {
+		return from(itemPedido)
+				.where(itemPedido.pedido.eq(pedido)
+						.and(itemPedido.itemVenda.ativo.eq(false)))
+				.fetchCount();
+	}
+
 }
