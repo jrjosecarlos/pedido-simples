@@ -138,11 +138,11 @@ Busca os itens do pedido com id informado. Também possui paginação padrão e 
 
 Busca um item de pedido específico pelo seu id.
 
-### POST /pedido/{uuidPedido}/item-pedido
+#### POST /pedido/{uuidPedido}/item-pedido
 
 Adiciona um novo item de venda a um pedido.
 
-### DELETE /item-pedido/{uuid}
+#### DELETE /item-pedido/{uuid}
 
 Exclui um item de venda.
 
