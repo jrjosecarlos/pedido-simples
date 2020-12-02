@@ -34,13 +34,14 @@ import br.org.casa.pedidosimples.service.ItemVendaService;
 @Transactional(readOnly = true)
 public class ItemVendaServiceImpl implements ItemVendaService {
 
-	private final ItemVendaRepository itemVendaRepository;
-
 	@Autowired
 	private ItemPedidoService itemPedidoService;
 
-	ItemVendaServiceImpl(ItemVendaRepository itemVendaRepository) {
-		this.itemVendaRepository = itemVendaRepository;
+	@Autowired
+	private ItemVendaRepository itemVendaRepository;
+
+	ItemVendaServiceImpl() {
+
 	}
 
 	@Override
