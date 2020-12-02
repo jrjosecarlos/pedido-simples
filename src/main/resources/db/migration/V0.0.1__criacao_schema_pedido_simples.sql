@@ -1,1 +1,1 @@
-CREATE SCHEMA pedido_simples;
+CREATE SCHEMA IF NOT EXISTS pedido_simples;
