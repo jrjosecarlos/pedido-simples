@@ -146,6 +146,6 @@ Adiciona um novo item de venda a um pedido.
 
 Exclui um item de venda.
 
-Erros comuns desses endpoints, como falhas de validação ou requisições inválidas, são tratadas pelo sistema (através de um ControllerAdvice), de forma a retornar um payload padronizado e descritivo.
+Erros comuns desses endpoints, como falhas de validação ou requisições inválidas, são tratadas pelo sistema através de um ControllerAdvice, de forma a retornar um payload padronizado e descritivo.
 
-O sistema conta ainda com testes unitários das camadas Repository e Service. Ficou pendente a implementação dos testes na camada Controller e os de integração.
+O sistema conta ainda com testes unitários de todas as camadas.
