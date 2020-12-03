@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -35,10 +36,11 @@ import br.org.casa.pedidosimples.service.ItemPedidoService;
 @RestController
 public class ItemPedidoController {
 
-	private final ItemPedidoService service;
+	@Autowired
+	private ItemPedidoService service;
 
-	ItemPedidoController(ItemPedidoService service) {
-		this.service = service;
+	ItemPedidoController() {
+
 	}
 
 	@GetMapping("/pedido/{uuidPedido}/itens-pedido")
