@@ -59,7 +59,7 @@ public class ItemPedidoControllerTest {
 	private ItemPedidoService service;
 
 	@Test
-	public void testGetItensPedidoSemQueryParam() throws Exception {
+	public void testGetItensPedido() throws Exception {
 		ItemPedido itemPedido = new ItemPedido();
 		itemPedido.setId(UUID.randomUUID());
 
