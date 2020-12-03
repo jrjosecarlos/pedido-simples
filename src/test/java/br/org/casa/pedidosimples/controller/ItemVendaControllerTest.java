@@ -147,13 +147,6 @@ public class ItemVendaControllerTest {
 	public void testPutItemVendaIdUrlDiferente() throws Exception {
 		UUID uuid = UUID.fromString("c92a17bc-b0cb-4f37-baf8-177d4a2b83ba");
 
-		/*ItemVenda itemVenda = new ItemVenda();
-		itemVenda.setId(UUID.randomUUID());
-		itemVenda.setNome("Produto Ativo 2");
-		itemVenda.setTipo(TipoItemVenda.PRODUTO);
-		itemVenda.setValorBase(new BigDecimal("55.00"));
-		itemVenda.setAtivo(true);*/
-
 		String payload = "{"
 				+ "    \"id\": \"a97245b4-566d-4cfd-9d89-7492dc5c6a48\","
 				+ "    \"nome\": \"Produto Ativo 2\","
@@ -175,13 +168,6 @@ public class ItemVendaControllerTest {
 	public void testPutItemVendaErroValidacao() throws Exception {
 		UUID uuid = UUID.fromString("a97245b4-566d-4cfd-9d89-7492dc5c6a48");
 
-		/*ItemVenda itemVenda = new ItemVenda();
-		itemVenda.setId(UUID.randomUUID());
-		itemVenda.setNome("Produto Ativo 2");
-		itemVenda.setTipo(TipoItemVenda.PRODUTO);
-		itemVenda.setValorBase(new BigDecimal("55.00"));
-		itemVenda.setAtivo(true);*/
-
 		String payload = "{"
 				+ "    \"id\": \"a97245b4-566d-4cfd-9d89-7492dc5c6a48\","
 				+ "    \"tipo\": \"P\","
@@ -201,13 +187,6 @@ public class ItemVendaControllerTest {
 	@Test
 	public void testPutItemVendaEntidadeNaoEncontrada() throws Exception {
 		UUID uuid = UUID.fromString("a97245b4-566d-4cfd-9d89-7492dc5c6a48");
-
-		/*ItemVenda itemVenda = new ItemVenda();
-		itemVenda.setId(UUID.randomUUID());
-		itemVenda.setNome("Produto Ativo 2");
-		itemVenda.setTipo(TipoItemVenda.PRODUTO);
-		itemVenda.setValorBase(new BigDecimal("55.00"));
-		itemVenda.setAtivo(true);*/
 
 		String payload = "{"
 				+ "    \"id\": \"a97245b4-566d-4cfd-9d89-7492dc5c6a48\","
@@ -231,13 +210,6 @@ public class ItemVendaControllerTest {
 	@Test
 	public void testPutItemVendaOperacaoInvalida() throws Exception {
 		UUID uuid = UUID.fromString("a97245b4-566d-4cfd-9d89-7492dc5c6a48");
-
-		/*ItemVenda itemVenda = new ItemVenda();
-		itemVenda.setId(UUID.randomUUID());
-		itemVenda.setNome("Produto Ativo 2");
-		itemVenda.setTipo(TipoItemVenda.PRODUTO);
-		itemVenda.setValorBase(new BigDecimal("55.00"));
-		itemVenda.setAtivo(true);*/
 
 		String payload = "{"
 				+ "    \"id\": \"a97245b4-566d-4cfd-9d89-7492dc5c6a48\","
