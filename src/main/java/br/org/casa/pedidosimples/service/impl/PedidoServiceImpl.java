@@ -57,7 +57,11 @@ public class PedidoServiceImpl implements PedidoService {
 
 	@Override
 	public Optional<Pedido> buscarPorId(UUID uuid) {
-		return pedidoRepository.findById(uuid);
+		return pedidoRepository.findById(uuid)
+				.map(p -> {
+					p.setItensPedido(itemPedidoService.buscarPorPedido(p));
+					return p;
+				});
 	}
 
 	@Override

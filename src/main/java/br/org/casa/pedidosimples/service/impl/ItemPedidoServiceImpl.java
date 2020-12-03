@@ -38,7 +38,8 @@ import br.org.casa.pedidosimples.service.PedidoService;
 @Transactional(readOnly = true)
 public class ItemPedidoServiceImpl implements ItemPedidoService {
 
-	private final ItemPedidoRepository itemPedidoRepository;
+	@Autowired
+	private ItemPedidoRepository itemPedidoRepository;
 
 	@Autowired
 	private PedidoService pedidoService;
@@ -46,8 +47,8 @@ public class ItemPedidoServiceImpl implements ItemPedidoService {
 	@Autowired
 	private ItemVendaService itemVendaService;
 
-	ItemPedidoServiceImpl(ItemPedidoRepository itemPedidoRepository) {
-		this.itemPedidoRepository = itemPedidoRepository;
+	ItemPedidoServiceImpl() {
+
 	}
 
 	@Override
@@ -77,7 +78,7 @@ public class ItemPedidoServiceImpl implements ItemPedidoService {
 			.filter(iv -> !iv.isAtivo())
 			.findAny()
 			.ifPresent(iv -> {
-				throw new OperacaoInvalidaException(String.format("Não é possível atualizar valores do %s %s, pois ele está associado a algum %s inativo",
+				throw new OperacaoInvalidaException(String.format("Não é possível atualizar os valores do %s %s, pois ele está associado a algum %s inativo",
 						Pedido.NOME_EXIBICAO_ENTIDADE,
 						pedido.getId(),
 						ItemVenda.NOME_EXIBICAO_ENTIDADE
@@ -166,6 +167,11 @@ public class ItemPedidoServiceImpl implements ItemPedidoService {
 	@Override
 	public long contarPorPedidoEItemVendaInativo(Pedido pedido) {
 		return itemPedidoRepository.contarPorPedidoEItemVendaInativo(pedido);
+	}
+
+	@Override
+	public List<ItemPedido> buscarPorPedido(Pedido pedido) {
+		return itemPedidoRepository.findByPedido(pedido);
 	}
 
 }

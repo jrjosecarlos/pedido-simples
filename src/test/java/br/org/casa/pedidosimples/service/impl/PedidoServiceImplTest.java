@@ -13,14 +13,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -34,287 +33,312 @@ import com.querydsl.core.types.Predicate;
 
 import br.org.casa.pedidosimples.exception.EntidadeNaoEncontradaException;
 import br.org.casa.pedidosimples.exception.OperacaoInvalidaException;
+import br.org.casa.pedidosimples.model.ItemPedido;
+import br.org.casa.pedidosimples.model.ItemVenda;
 import br.org.casa.pedidosimples.model.Pedido;
 import br.org.casa.pedidosimples.model.enumeration.SituacaoPedido;
+import br.org.casa.pedidosimples.model.enumeration.TipoItemVenda;
 import br.org.casa.pedidosimples.repository.PedidoRepository;
 import br.org.casa.pedidosimples.service.ItemPedidoService;
 import br.org.casa.pedidosimples.service.PedidoService;
 
 /**
+ * Classe de testes para {@link PedidoServiceImpl}.
  *
  * @author jrjosecarlos
  *
  */
 @RunWith(SpringRunner.class)
-public class PedidoServiceImplTest {
+public class PedidoServiceImplTest implements ParameterAsAnswer {
 	@Autowired
-    private PedidoService service;
+	private PedidoService service;
 
-    @MockBean
-    private PedidoRepository pedidoRepository;
+	@MockBean
+	private PedidoRepository pedidoRepository;
 
-    @MockBean
-    private ItemPedidoService itemPedidoService;
+	@MockBean
+	private ItemPedidoService itemPedidoService;
 
-    private static Answer<Pedido> answerDevolveParametro = new Answer<Pedido>() {
-		public Pedido answer(InvocationOnMock invocation) throws Throwable {
-			return (Pedido) invocation.getArguments()[0];
+	@TestConfiguration
+	static class PedidoServiceImplTestContextConfiguration {
+
+		@Bean
+		public PedidoService pedidoService() {
+			return new PedidoServiceImpl();
 		}
-	};
+	}
 
-    @TestConfiguration
-    static class PedidoServiceImplTestContextConfiguration {
+	@Test
+	public void testBuscarTodos() {
+		Page<Pedido> page = new PageImpl<Pedido>(Collections.emptyList());
+		Pageable pageable = mock(Pageable.class);
 
-        @Bean
-        public PedidoService pedidoService() {
-            return new PedidoServiceImpl();
-        }
-    }
+		when(pedidoRepository.findAll(any(Predicate.class), any(Pageable.class)))
+			.thenReturn(page);
 
-    @Test
-    public void testBuscarTodos() {
-    	Page<Pedido> page = new PageImpl<Pedido>(Collections.emptyList());
-    	Pageable pageable = mock(Pageable.class);
+		Page<Pedido> pageRetornado = service.buscarTodos(pageable, Collections.emptyMap());
 
-    	when(pedidoRepository.findAll(any(Predicate.class), any(Pageable.class)))
-    		.thenReturn(page);
+		assertThat(pageRetornado)
+			.isEqualTo(page);
+	}
 
-    	Page<Pedido> pageRetornado = service.buscarTodos(pageable, Collections.emptyMap());
+	@Test
+	public void testBuscarPorId() {
+		Pedido pedido = new Pedido();
+		pedido.setId(UUID.randomUUID());
+		pedido.setFatorDesconto(new BigDecimal("0.00"));
 
-    	assertThat(pageRetornado)
-    		.isEqualTo(page);
-    }
+		ItemVenda itemVenda1 = new ItemVenda();
+		itemVenda1.setTipo(TipoItemVenda.PRODUTO);
+		itemVenda1.setValorBase(new BigDecimal("5.00"));
 
-    @Test
-    public void testBuscarPorId() {
-    	Pedido pedido = new Pedido();
+		ItemPedido itemPedido1 = new ItemPedido();
+		itemPedido1.setPedido(pedido);
+		itemPedido1.setItemVenda(itemVenda1);
+		itemPedido1.calcularValor();
 
-    	when(pedidoRepository.findById(any()))
-    		.thenReturn(Optional.of(pedido));
+		ItemVenda itemVenda2 = new ItemVenda();
+		itemVenda2.setTipo(TipoItemVenda.SERVICO);
+		itemVenda2.setValorBase(new BigDecimal("15.00"));
 
-    	assertThat(service.buscarPorId(UUID.randomUUID()))
-    		.contains(pedido);
-    }
+		ItemPedido itemPedido2 = new ItemPedido();
+		itemPedido2.setPedido(pedido);
+		itemPedido2.setItemVenda(itemVenda2);
+		itemPedido2.calcularValor();
 
-    @Test
-    public void testIncluir() {
-    	Pedido pedidoAIncluir = new Pedido();
-    	Pedido pedidoIncluido = new Pedido();
-    	pedidoIncluido.setId(UUID.randomUUID());
+		when(pedidoRepository.findById(any()))
+			.thenReturn(Optional.of(pedido));
+		when(itemPedidoService.buscarPorPedido(pedido))
+			.thenReturn(Arrays.asList(itemPedido1, itemPedido2));
 
-    	when(pedidoRepository.save(pedidoAIncluir))
-    		.thenReturn(pedidoIncluido);
+		assertThat(service.buscarPorId(UUID.randomUUID()))
+			.contains(pedido)
+			.get()
+			.satisfies(p -> {
+				assertThat(p.getValorTotal())
+					.isEqualTo(new BigDecimal("20.00"));
+			});
+	}
 
-    	assertThat(service.incluir(pedidoAIncluir))
-    		.isEqualTo(pedidoIncluido);
-    }
+	@Test
+	public void testIncluir() {
+		Pedido pedidoAIncluir = new Pedido();
+		Pedido pedidoIncluido = new Pedido();
+		pedidoIncluido.setId(UUID.randomUUID());
 
-    @Test
-    public void testAlterarComEntidadeNaoEncontrada() {
-    	when(pedidoRepository.findById(any()))
-    		.thenReturn(Optional.empty());
+		when(pedidoRepository.save(pedidoAIncluir))
+			.thenReturn(pedidoIncluido);
 
-    	assertThatExceptionOfType(EntidadeNaoEncontradaException.class)
-    		.isThrownBy(() -> service.alterar(UUID.randomUUID(), new Pedido()));
-    }
+		assertThat(service.incluir(pedidoAIncluir))
+			.isEqualTo(pedidoIncluido);
+	}
 
-    @Test
-    public void testAlterarAlterandoFatorDesconto() {
-    	Pedido aAlterar = new Pedido();
-    	aAlterar.setFatorDesconto(new BigDecimal("0.00"));
+	@Test
+	public void testAlterarComEntidadeNaoEncontrada() {
+		when(pedidoRepository.findById(any()))
+			.thenReturn(Optional.empty());
 
-    	Pedido existente = new Pedido();
-    	existente.setFatorDesconto(new BigDecimal("1.00"));
+		assertThatExceptionOfType(EntidadeNaoEncontradaException.class)
+			.isThrownBy(() -> service.alterar(UUID.randomUUID(), new Pedido()));
+	}
 
-    	when(pedidoRepository.findById(any()))
-    		.thenReturn(Optional.of(existente));
+	@Test
+	public void testAlterarAlterandoFatorDesconto() {
+		Pedido aAlterar = new Pedido();
+		aAlterar.setFatorDesconto(new BigDecimal("0.00"));
 
-    	assertThatExceptionOfType(OperacaoInvalidaException.class)
+		Pedido existente = new Pedido();
+		existente.setFatorDesconto(new BigDecimal("1.00"));
+
+		when(pedidoRepository.findById(any()))
+			.thenReturn(Optional.of(existente));
+
+		assertThatExceptionOfType(OperacaoInvalidaException.class)
 			.isThrownBy(() -> service.alterar(aAlterar.getId(), aAlterar))
 			.withMessageContaining("Não é possível alterar diretamente o fator de desconto");
-    }
+	}
 
-    @Test
-    public void testAlterarAlterandoSituacao() {
-    	Pedido aAlterar = new Pedido();
-    	aAlterar.setFatorDesconto(new BigDecimal("1.00"));
-    	aAlterar.setSituacao(SituacaoPedido.FECHADO);
+	@Test
+	public void testAlterarAlterandoSituacao() {
+		Pedido aAlterar = new Pedido();
+		aAlterar.setFatorDesconto(new BigDecimal("1.00"));
+		aAlterar.setSituacao(SituacaoPedido.FECHADO);
 
-    	Pedido existente = new Pedido();
-    	existente.setFatorDesconto(new BigDecimal("1.00"));
-    	existente.setSituacao(SituacaoPedido.ABERTO);
+		Pedido existente = new Pedido();
+		existente.setFatorDesconto(new BigDecimal("1.00"));
+		existente.setSituacao(SituacaoPedido.ABERTO);
 
-    	when(pedidoRepository.findById(any()))
-    		.thenReturn(Optional.of(existente));
+		when(pedidoRepository.findById(any()))
+			.thenReturn(Optional.of(existente));
 
-    	assertThatExceptionOfType(OperacaoInvalidaException.class)
+		assertThatExceptionOfType(OperacaoInvalidaException.class)
 			.isThrownBy(() -> service.alterar(aAlterar.getId(), aAlterar))
 			.withMessageContaining("Não é possível alterar diretamente a situação");
-    }
+	}
 
-    @Test
-    public void testAlterarComSucesso() {
-    	Pedido aAlterar = new Pedido();
-    	aAlterar.setFatorDesconto(new BigDecimal("1.00"));
-    	aAlterar.setSituacao(SituacaoPedido.ABERTO);
-    	aAlterar.setCodigo("00110022");
+	@Test
+	public void testAlterarComSucesso() {
+		Pedido aAlterar = new Pedido();
+		aAlterar.setFatorDesconto(new BigDecimal("1.00"));
+		aAlterar.setSituacao(SituacaoPedido.ABERTO);
+		aAlterar.setCodigo("00110022");
 
-    	Pedido existente = new Pedido();
-    	existente.setFatorDesconto(new BigDecimal("1.00"));
-    	existente.setSituacao(SituacaoPedido.ABERTO);
-    	existente.setCodigo("00110011");
+		Pedido existente = new Pedido();
+		existente.setFatorDesconto(new BigDecimal("1.00"));
+		existente.setSituacao(SituacaoPedido.ABERTO);
+		existente.setCodigo("00110011");
 
-    	when(pedidoRepository.findById(any()))
-    		.thenReturn(Optional.of(existente));
-    	when(pedidoRepository.save(any()))
-	    	.thenAnswer(answerDevolveParametro);
+		when(pedidoRepository.findById(any()))
+			.thenReturn(Optional.of(existente));
+		when(pedidoRepository.save(any()))
+			.thenAnswer(this.<Pedido>getParameterAsAnswer());
 
-    	Pedido retornado = service.alterar(aAlterar.getId(), aAlterar);
+		Pedido retornado = service.alterar(aAlterar.getId(), aAlterar);
 
-    	assertThat(retornado.getCodigo())
-    		.isEqualTo(aAlterar.getCodigo());
-    }
+		assertThat(retornado.getCodigo())
+			.isEqualTo(aAlterar.getCodigo());
+	}
 
-    @Test
-    public void testExcluirNaoEncontrado() {
-    	when(pedidoRepository.findById(any()))
+	@Test
+	public void testExcluirNaoEncontrado() {
+		when(pedidoRepository.findById(any()))
 			.thenReturn(Optional.empty());
 
 		assertThatExceptionOfType(EntidadeNaoEncontradaException.class)
 			.isThrownBy(() -> service.excluir(UUID.randomUUID()));
-    }
+	}
 
 
-    @Test
-    public void testExcluirComSucesso() {
-    	Pedido existente = new Pedido();
-    	existente.setId(UUID.randomUUID());
-    	existente.setFatorDesconto(new BigDecimal("1.00"));
-    	existente.setSituacao(SituacaoPedido.ABERTO);
-    	existente.setCodigo("00110011");
+	@Test
+	public void testExcluirComSucesso() {
+		Pedido existente = new Pedido();
+		existente.setId(UUID.randomUUID());
+		existente.setFatorDesconto(new BigDecimal("1.00"));
+		existente.setSituacao(SituacaoPedido.ABERTO);
+		existente.setCodigo("00110011");
 
-    	when(pedidoRepository.findById(any()))
-    		.thenReturn(Optional.of(existente));
-    	when(itemPedidoService.excluirPorPedido(existente))
-    		.thenReturn(2L);
-    	doNothing().when(pedidoRepository).delete(any());
+		when(pedidoRepository.findById(any()))
+			.thenReturn(Optional.of(existente));
+		when(itemPedidoService.excluirPorPedido(existente))
+			.thenReturn(2L);
+		doNothing().when(pedidoRepository).delete(any());
 
-    	assertThatCode( () -> service.excluir(existente.getId()))
-    		.doesNotThrowAnyException();
-    	verify(pedidoRepository).delete(existente);
-    }
+		assertThatCode( () -> service.excluir(existente.getId()))
+			.doesNotThrowAnyException();
+		verify(pedidoRepository).delete(existente);
+	}
 
-    @Test
-    public void testAplicarDescontoNaoEncontrado() {
-    	when(pedidoRepository.findById(any()))
+	@Test
+	public void testAplicarDescontoNaoEncontrado() {
+		when(pedidoRepository.findById(any()))
 			.thenReturn(Optional.empty());
 
 		assertThatExceptionOfType(EntidadeNaoEncontradaException.class)
 			.isThrownBy(() -> service.aplicarDesconto(UUID.randomUUID(), BigDecimal.ONE));
-    }
+	}
 
-    @Test
-    public void testAplicarDescontoOperacaoInvalida() {
-    	Pedido existente = new Pedido();
-    	existente.setId(UUID.randomUUID());
-    	existente.setFatorDesconto(new BigDecimal("1.00"));
-    	existente.setSituacao(SituacaoPedido.FECHADO);
-    	existente.setCodigo("00110011");
+	@Test
+	public void testAplicarDescontoOperacaoInvalida() {
+		Pedido existente = new Pedido();
+		existente.setId(UUID.randomUUID());
+		existente.setFatorDesconto(new BigDecimal("1.00"));
+		existente.setSituacao(SituacaoPedido.FECHADO);
+		existente.setCodigo("00110011");
 
-    	when(pedidoRepository.findById(any()))
-    		.thenReturn(Optional.of(existente));
+		when(pedidoRepository.findById(any()))
+			.thenReturn(Optional.of(existente));
 
-    	assertThatExceptionOfType(OperacaoInvalidaException.class)
-    		.isThrownBy(() -> service.aplicarDesconto(existente.getId(), BigDecimal.ZERO))
-    		.withMessageContaining("Não é possível alterar o fator de desconto");
-    }
+		assertThatExceptionOfType(OperacaoInvalidaException.class)
+			.isThrownBy(() -> service.aplicarDesconto(existente.getId(), BigDecimal.ZERO))
+			.withMessageContaining("Não é possível alterar o fator de desconto");
+	}
 
-    @Test
-    public void testAplicarDescontoComSucesso() {
-    	Pedido existente = new Pedido();
-    	existente.setId(UUID.randomUUID());
-    	existente.setFatorDesconto(new BigDecimal("1.00"));
-    	existente.setSituacao(SituacaoPedido.ABERTO);
-    	existente.setCodigo("00110011");
+	@Test
+	public void testAplicarDescontoComSucesso() {
+		Pedido existente = new Pedido();
+		existente.setId(UUID.randomUUID());
+		existente.setFatorDesconto(new BigDecimal("1.00"));
+		existente.setSituacao(SituacaoPedido.ABERTO);
+		existente.setCodigo("00110011");
 
-    	BigDecimal novoFatorDesconto = new BigDecimal("0.50");
+		BigDecimal novoFatorDesconto = new BigDecimal("0.50");
 
-    	when(pedidoRepository.findById(any()))
-    		.thenReturn(Optional.of(existente));
+		when(pedidoRepository.findById(any()))
+			.thenReturn(Optional.of(existente));
 
-    	when(pedidoRepository.save(any())).thenAnswer(answerDevolveParametro);
-    	doNothing().when(itemPedidoService).atualizarValores(any(Pedido.class));
+		when(pedidoRepository.save(any())).thenAnswer(this.<Pedido>getParameterAsAnswer());
+		doNothing().when(itemPedidoService).atualizarValores(any(Pedido.class));
 
-    	assertThatCode( () -> service.aplicarDesconto(existente.getId(), novoFatorDesconto))
-    		.doesNotThrowAnyException();
-    	assertThat(existente.getFatorDesconto())
-    		.isEqualTo(novoFatorDesconto);
-    }
+		assertThatCode( () -> service.aplicarDesconto(existente.getId(), novoFatorDesconto))
+			.doesNotThrowAnyException();
+		assertThat(existente.getFatorDesconto())
+			.isEqualTo(novoFatorDesconto);
+	}
 
-    @Test
-    public void testFecharNaoEncontrado() {
-    	when(pedidoRepository.findById(any()))
+	@Test
+	public void testFecharNaoEncontrado() {
+		when(pedidoRepository.findById(any()))
 			.thenReturn(Optional.empty());
 
 		assertThatExceptionOfType(EntidadeNaoEncontradaException.class)
 			.isThrownBy(() -> service.fechar(UUID.randomUUID()));
-    }
+	}
 
-    @Test
-    public void testFecharOperacaoInvalidaJaFechado() {
-    	Pedido existente = new Pedido();
-    	existente.setId(UUID.randomUUID());
-    	existente.setFatorDesconto(new BigDecimal("1.00"));
-    	existente.setSituacao(SituacaoPedido.FECHADO);
-    	existente.setCodigo("00110011");
+	@Test
+	public void testFecharOperacaoInvalidaJaFechado() {
+		Pedido existente = new Pedido();
+		existente.setId(UUID.randomUUID());
+		existente.setFatorDesconto(new BigDecimal("1.00"));
+		existente.setSituacao(SituacaoPedido.FECHADO);
+		existente.setCodigo("00110011");
 
-    	when(pedidoRepository.findById(any()))
-    		.thenReturn(Optional.of(existente));
+		when(pedidoRepository.findById(any()))
+			.thenReturn(Optional.of(existente));
 
-    	assertThatExceptionOfType(OperacaoInvalidaException.class)
-    		.isThrownBy(() -> service.fechar(existente.getId()))
-    		.withMessageContaining("Não é possível fechar um Pedido já fechado");
-    }
+		assertThatExceptionOfType(OperacaoInvalidaException.class)
+			.isThrownBy(() -> service.fechar(existente.getId()))
+			.withMessageContaining("Não é possível fechar um Pedido já fechado");
+	}
 
-    @Test
-    public void testFecharOperacaoInvalidaItensInativos() {
-    	Pedido existente = new Pedido();
-    	existente.setId(UUID.randomUUID());
-    	existente.setFatorDesconto(new BigDecimal("1.00"));
-    	existente.setSituacao(SituacaoPedido.ABERTO);
-    	existente.setCodigo("00110011");
+	@Test
+	public void testFecharOperacaoInvalidaItensInativos() {
+		Pedido existente = new Pedido();
+		existente.setId(UUID.randomUUID());
+		existente.setFatorDesconto(new BigDecimal("1.00"));
+		existente.setSituacao(SituacaoPedido.ABERTO);
+		existente.setCodigo("00110011");
 
-    	when(pedidoRepository.findById(any()))
-    		.thenReturn(Optional.of(existente));
-    	when(itemPedidoService.contarPorPedidoEItemVendaInativo(any()))
-    		.thenReturn(3L);
+		when(pedidoRepository.findById(any()))
+			.thenReturn(Optional.of(existente));
+		when(itemPedidoService.contarPorPedidoEItemVendaInativo(any()))
+			.thenReturn(3L);
 
-    	assertThatExceptionOfType(OperacaoInvalidaException.class)
-    		.isThrownBy(() -> service.fechar(existente.getId()))
-    		.withMessageContaining("Não é possível fechar este Pedido");
-    }
+		assertThatExceptionOfType(OperacaoInvalidaException.class)
+			.isThrownBy(() -> service.fechar(existente.getId()))
+			.withMessageContaining("Não é possível fechar este Pedido");
+	}
 
-    @Test
-    public void testFecharComSucesso() {
-    	Pedido existente = new Pedido();
-    	existente.setId(UUID.randomUUID());
-    	existente.setFatorDesconto(new BigDecimal("1.00"));
-    	existente.setSituacao(SituacaoPedido.ABERTO);
-    	existente.setCodigo("00110011");
-
-
-    	when(pedidoRepository.findById(any()))
-    		.thenReturn(Optional.of(existente));
-    	when(itemPedidoService.contarPorPedidoEItemVendaInativo(any()))
-    		.thenReturn(0L);
-    	doNothing().when(itemPedidoService).atualizarValores(any(Pedido.class));
-    	when(pedidoRepository.save(any())).thenAnswer(answerDevolveParametro);
+	@Test
+	public void testFecharComSucesso() {
+		Pedido existente = new Pedido();
+		existente.setId(UUID.randomUUID());
+		existente.setFatorDesconto(new BigDecimal("1.00"));
+		existente.setSituacao(SituacaoPedido.ABERTO);
+		existente.setCodigo("00110011");
 
 
-    	assertThatCode( () -> service.fechar(existente.getId()))
-    		.doesNotThrowAnyException();
-    	assertThat(existente.getSituacao())
-    		.isEqualTo(SituacaoPedido.FECHADO);
-    }
+		when(pedidoRepository.findById(any()))
+			.thenReturn(Optional.of(existente));
+		when(itemPedidoService.contarPorPedidoEItemVendaInativo(any()))
+			.thenReturn(0L);
+		doNothing().when(itemPedidoService).atualizarValores(any(Pedido.class));
+		when(pedidoRepository.save(any())).thenAnswer(this.<Pedido>getParameterAsAnswer());
+
+
+		assertThatCode( () -> service.fechar(existente.getId()))
+			.doesNotThrowAnyException();
+		assertThat(existente.getSituacao())
+			.isEqualTo(SituacaoPedido.FECHADO);
+	}
 
 }
