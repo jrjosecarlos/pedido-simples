@@ -2,6 +2,7 @@ package br.org.casa.pedidosimples.model;
 
 import java.math.BigDecimal;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.persistence.AttributeOverride;
@@ -14,6 +15,11 @@ import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.querydsl.core.types.dsl.BooleanExpression;
 
 import br.org.casa.pedidosimples.exception.ParametroBuscaParseException;
@@ -54,6 +60,11 @@ public class Pedido extends BaseEntity {
 	@Column(name = "situacao", nullable = false)
 	@NotNull
 	private SituacaoPedido situacao;
+
+	// Apesar do relacionamento entre Pedido e ItemPedido, o controle de ciclo de vida dos ItemPedido
+	// é feito pelas classes de serviço. Este campo existe apenas para a exibição do valor total do Pedido.
+	@JsonIgnore
+	private transient List<ItemPedido> itensPedido;
 
 	/**
 	 * Retorna o valor atual do campo codigo.
@@ -107,6 +118,28 @@ public class Pedido extends BaseEntity {
 	 */
 	public void setSituacao(SituacaoPedido situacao) {
 		this.situacao = situacao;
+	}
+
+	/**
+	 * Define um novo valor para o campo itensPedido
+	 *
+	 * @param itensPedido o novo valor de itensPedido
+	 */
+	public void setItensPedido(List<ItemPedido> itensPedido) {
+		this.itensPedido = itensPedido;
+	}
+
+	@JsonProperty(value = "valorTotal", access = Access.READ_ONLY)
+	@JsonInclude(Include.NON_NULL)
+	public BigDecimal getValorTotal() {
+		if (this.itensPedido == null) {
+			return null;
+		}
+		BigDecimal valor = new BigDecimal("0.00");
+
+		return this.itensPedido.stream()
+				.map(ItemPedido::getValor)
+				.reduce(valor, BigDecimal::add);
 	}
 
 	public enum ParametroBuscaPedido {

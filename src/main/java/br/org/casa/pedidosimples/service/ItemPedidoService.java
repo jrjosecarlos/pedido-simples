@@ -3,6 +3,7 @@
  */
 package br.org.casa.pedidosimples.service;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -123,5 +124,16 @@ public interface ItemPedidoService {
 	 * @return a quantidade de ItemPedido associada a ItemVenda inativo. Pode ser zero.
 	 */
 	long contarPorPedidoEItemVendaInativo(Pedido pedido);
+
+	/**
+	 * Retorna os {@link ItemPedido} associados ao Pedido informado.
+	 *
+	 * @param pedido o pedido que se deseja buscar
+	 * @return uma Lista com os ItemPedido associados ao pedido informado
+	 * @apiNote Este método possui uso mais interno à camada de Serviço do que os demais, assim
+	 * fica a cargo do chamador do método verificar se o Pedido informado realmente existe.
+	 * Caso não exista, será simplesmente retornada uma lista vazia.
+	 */
+	List<ItemPedido> buscarPorPedido(Pedido pedido);
 
 }

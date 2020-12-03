@@ -421,4 +421,20 @@ public class ItemPedidoServiceImplTest implements ParameterAsAnswer {
     		.isEqualTo(20L);
     }
 
+    @Test
+    public void testBuscarPorPedido() {
+		ItemPedido itemPedido = new ItemPedido();
+		itemPedido.setId(UUID.randomUUID());
+
+		Pedido pedido = new Pedido();
+		pedido.setId(UUID.randomUUID());
+
+		when(itemPedidoRepository.findByPedido(pedido))
+			.thenReturn(Arrays.asList(itemPedido));
+
+		assertThat(service.buscarPorPedido(pedido))
+			.hasSize(1)
+			.containsExactly(itemPedido);
+    }
+
 }

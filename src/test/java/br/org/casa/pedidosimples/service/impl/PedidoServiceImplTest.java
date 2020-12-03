@@ -13,6 +13,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
@@ -32,8 +33,11 @@ import com.querydsl.core.types.Predicate;
 
 import br.org.casa.pedidosimples.exception.EntidadeNaoEncontradaException;
 import br.org.casa.pedidosimples.exception.OperacaoInvalidaException;
+import br.org.casa.pedidosimples.model.ItemPedido;
+import br.org.casa.pedidosimples.model.ItemVenda;
 import br.org.casa.pedidosimples.model.Pedido;
 import br.org.casa.pedidosimples.model.enumeration.SituacaoPedido;
+import br.org.casa.pedidosimples.model.enumeration.TipoItemVenda;
 import br.org.casa.pedidosimples.repository.PedidoRepository;
 import br.org.casa.pedidosimples.service.ItemPedidoService;
 import br.org.casa.pedidosimples.service.PedidoService;
@@ -81,12 +85,39 @@ public class PedidoServiceImplTest implements ParameterAsAnswer {
 	@Test
 	public void testBuscarPorId() {
 		Pedido pedido = new Pedido();
+		pedido.setId(UUID.randomUUID());
+		pedido.setFatorDesconto(new BigDecimal("0.00"));
+
+		ItemVenda itemVenda1 = new ItemVenda();
+		itemVenda1.setTipo(TipoItemVenda.PRODUTO);
+		itemVenda1.setValorBase(new BigDecimal("5.00"));
+
+		ItemPedido itemPedido1 = new ItemPedido();
+		itemPedido1.setPedido(pedido);
+		itemPedido1.setItemVenda(itemVenda1);
+		itemPedido1.calcularValor();
+
+		ItemVenda itemVenda2 = new ItemVenda();
+		itemVenda2.setTipo(TipoItemVenda.SERVICO);
+		itemVenda2.setValorBase(new BigDecimal("15.00"));
+
+		ItemPedido itemPedido2 = new ItemPedido();
+		itemPedido2.setPedido(pedido);
+		itemPedido2.setItemVenda(itemVenda2);
+		itemPedido2.calcularValor();
 
 		when(pedidoRepository.findById(any()))
 			.thenReturn(Optional.of(pedido));
+		when(itemPedidoService.buscarPorPedido(pedido))
+			.thenReturn(Arrays.asList(itemPedido1, itemPedido2));
 
 		assertThat(service.buscarPorId(UUID.randomUUID()))
-			.contains(pedido);
+			.contains(pedido)
+			.get()
+			.satisfies(p -> {
+				assertThat(p.getValorTotal())
+					.isEqualTo(new BigDecimal("20.00"));
+			});
 	}
 
 	@Test

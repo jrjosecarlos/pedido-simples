@@ -169,4 +169,9 @@ public class ItemPedidoServiceImpl implements ItemPedidoService {
 		return itemPedidoRepository.contarPorPedidoEItemVendaInativo(pedido);
 	}
 
+	@Override
+	public List<ItemPedido> buscarPorPedido(Pedido pedido) {
+		return itemPedidoRepository.findByPedido(pedido);
+	}
+
 }
